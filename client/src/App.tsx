@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import GlobalStyles from './styles/GlobalStyles';
 
 import DashboardPage from './pages/DasboardPage/DashboardPage';
-import MatchingPage from './pages/MatchingPage';
+import MatchingPage from './pages/MatchingPage/MatchingPage';
 
 interface ServerResponse {
   message: string;

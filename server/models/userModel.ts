@@ -11,8 +11,10 @@ interface IUser extends Document {
   description: string;
   email: string;
   roleInfo: {
+    profession: string;
     discipline: string;
-    needHelpWith: string[];
+    needHelpWith?: string[];
+    canHelpWith?: string[];
     description: string;
   };
   qualification: {
@@ -37,8 +39,10 @@ const userSchema = new mongoose.Schema({
   description: { type: String, required: true },
   email: { type: String, required: true },
   roleInfo: {
-    discipline: { type: String, required: true },
-    needHelpWith: { type: [String], required: true },
+    profession: { type: String, required: false },
+    discipline: { type: String, required: false },
+    needHelpWith: { type: [String], required: false },
+    canHelpWith: { type: [String], required: false },
     description: { type: String, required: true },
   },
   qualification: {
