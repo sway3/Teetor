@@ -4,7 +4,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 // apis
-import { getMentors } from '../../apis/matchingAPIs';
+import { getMentors, sendMentoringRequest } from '../../apis/matchingAPIs';
 
 // components
 import NavBar from '../../components/NavBar/NavBar';
@@ -34,7 +34,14 @@ const MatchingPage: React.FC = () => {
   if (data) {
     const mentors = data.data;
     content = mentors.map((mentor: any) => {
-      return <MentorCard key={mentor._id}>{mentor.userName}</MentorCard>;
+      return (
+        <MentorCard key={mentor._id}>
+          <p>{mentor.userName}</p>
+          <button onClick={() => sendMentoringRequest(userID, mentor._id)}>
+            Mentoring request
+          </button>
+        </MentorCard>
+      );
     });
   }
 

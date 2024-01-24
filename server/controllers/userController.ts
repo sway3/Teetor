@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import User from '../models/userModel';
+import Notification from '../models/notificationModel';
 import { hasDuplicates } from '../utils/userUtility';
 
 export const getUserController = async (req: Request, res: Response) => {
@@ -12,7 +13,11 @@ export const getUserController = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json(user);
+
+    // find notification of this user
+    const notifications = await Notification.find({ recipientId: userId });
+
+    res.status(200).json({ user, notifications });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

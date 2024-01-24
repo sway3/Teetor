@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
 
-const userID: string = '65ad934a85aee463b6aa49df';
+const userID: string = '65ae47e985aee463b6aa49f0';
 
 const DashboardPage: React.FC = () => {
   const id: string = userID;
@@ -32,7 +32,7 @@ const DashboardPage: React.FC = () => {
   if (data) {
     console.log(data);
 
-    if (data.data.mentoringArchive.length === 0) {
+    if (data.data.user.mentoringArchive.length === 0) {
       content = (
         <div>
           <p>
