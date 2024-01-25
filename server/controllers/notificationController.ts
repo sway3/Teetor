@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import Notification from '../models/notificationModel';
+import User from '../models/userModel';
 
 export const getNotificationsController = async (req: Request, res: Response) => {
   const userId = req.params.id;
@@ -32,3 +33,21 @@ export const mentoringRequestController = async (req: Request, res: Response) =>
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getMentoringRequestController = async (req: Request, res: Response) => {
+  const notificationRequestId = req.params.id;
+
+  try {
+    const notification = await Notification.findById(notificationRequestId);
+
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+
+    const menteeInfo = await User.findById(notification.senderId);
+
+    return res.status(200).json({ notification, menteeInfo });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}

@@ -11,11 +11,16 @@ interface IUser extends Document {
   description: string;
   email: string;
   roleInfo: {
-    profession: string;
-    discipline: string;
-    needHelpWith?: string[];
-    canHelpWith?: string[];
-    description: string;
+    mentor: {
+      profession: string;
+      canHelpWith: string[];
+      description: string;
+    },
+    mentee: {
+      discipline: string;
+      needHelpWith: string[];
+      description: string;
+    }
   };
   qualification: {
     university: string;
@@ -39,11 +44,16 @@ const userSchema = new mongoose.Schema({
   description: { type: String, required: true },
   email: { type: String, required: true },
   roleInfo: {
-    profession: { type: String, required: false },
-    discipline: { type: String, required: false },
-    needHelpWith: { type: [String], required: false },
-    canHelpWith: { type: [String], required: false },
-    description: { type: String, required: true },
+    mentor: {
+      profession: { type: String, required: false },
+      canHelpWith: { type: [String], required: false },
+      description: { type: String, required: false },
+    },
+    mentee: {
+      discipline: { type: String, required: false },
+      needHelpWith: { type: [String], required: false },
+      description: { type: String, required: false },
+    },      
   },
   qualification: {
     university: { type: String, required: true },

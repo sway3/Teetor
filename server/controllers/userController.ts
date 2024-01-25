@@ -34,12 +34,18 @@ export const getMentorsController = async (req: Request, res: Response) => {
 
     const mentors = await User.find({ role: 'mentor' });
 
-    const menteeDiscipline = user.roleInfo?.discipline;
-    const menteeNeedHelpWith = user.roleInfo?.needHelpWith || [];
+    const menteeDiscipline = user.roleInfo?.mentee.discipline;
+    const menteeNeedHelpWith = user.roleInfo?.mentee.needHelpWith || [];
+
+    console.log('menteeDiscipline: ', menteeDiscipline);
+    console.log('menteeNeedHelpWith: ', menteeNeedHelpWith);
 
     const filteredMentors = mentors.filter((mentor) => {
-      const mentorProfession = mentor?.roleInfo?.profession || '';
-      const mentorCanHelpWith = mentor?.roleInfo?.canHelpWith || [];
+      const mentorProfession = mentor?.roleInfo?.mentor.profession || '';
+      const mentorCanHelpWith = mentor?.roleInfo?.mentor.canHelpWith || [];
+
+      console.log('mentorProfession: ', mentorProfession);
+      console.log('mentorCanHelpWith: ', mentorCanHelpWith);
 
       if (mentorProfession === menteeDiscipline) {
         if (hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith)) {

@@ -9,10 +9,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
 
-const userID: string = '65ae47e985aee463b6aa49f0';
+import { DUMMY_USER_ID } from '../../config/config';
+
+const userID = DUMMY_USER_ID;
 
 const DashboardPage: React.FC = () => {
   const id: string = userID;
+
+  localStorage.setItem('userID', id);
 
   const { data, isPending, error } = useQuery<AxiosResponse>({
     queryKey: ['user', id],

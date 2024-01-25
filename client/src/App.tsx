@@ -6,6 +6,7 @@ import GlobalStyles from './styles/GlobalStyles';
 
 import DashboardPage from './pages/DasboardPage/DashboardPage';
 import MatchingPage from './pages/MatchingPage/MatchingPage';
+import MentoringRequestPage from './pages/MentoringRequest/MentoringRequestPage';
 
 interface ServerResponse {
   message: string;
@@ -32,6 +33,10 @@ const App: React.FC = () => {
             <Route path='/' element={<h1>Home Page</h1>} />
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/match' element={<MatchingPage />} />
+            <Route
+              path='/mentoring-request/:id'
+              element={<MentoringRequestPage />}
+            />
           </Routes>
         </Router>
       </QueryClientProvider>

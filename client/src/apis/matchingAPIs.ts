@@ -19,7 +19,7 @@ export const sendMentoringRequest = async (menteeId: string, mentorId: string): 
   return response;
 }
 
-export const getNotifications = async (id: string): Promise<AxiosResponse> => {
-  const response = await axiosInstance.get('/users/' + id + '/notifications');
+export const getMentoringRequest = async (id: string): Promise<AxiosResponse> => {
+  const response = await axiosInstance.get(`mentoring-request/${id}`);
   return response;
 }

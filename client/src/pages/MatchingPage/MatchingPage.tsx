@@ -11,7 +11,9 @@ import NavBar from '../../components/NavBar/NavBar';
 import MentorCard from '../../components/UI/MentorCard/MentorCard';
 import { MatchingPageWrapper, GridWrapper } from './style';
 
-const userID: string = '65ad934a85aee463b6aa49df';
+import { DUMMY_USER_ID } from '../../config/config';
+
+const userID = DUMMY_USER_ID;
 
 const MatchingPage: React.FC = () => {
   const id: string = userID;
