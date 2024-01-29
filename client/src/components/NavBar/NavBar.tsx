@@ -36,6 +36,9 @@ const NavBar: React.FC = () => {
             <NavItem onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
               Notification
             </NavItem>
+            <NavItem>
+              <Link to='/match'>Find Mentors</Link>
+            </NavItem>
           </NavList>
         </NavBarInnerWrapper>
         <LoginWrapper>

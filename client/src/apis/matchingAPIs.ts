@@ -23,3 +23,10 @@ export const getMentoringRequest = async (id: string): Promise<AxiosResponse> =>
   const response = await axiosInstance.get(`mentoring-request/${id}`);
   return response;
 }
+
+export const setMentoringRequestStatus = async (id: string, status: string): Promise<AxiosResponse> => {
+  const response = await axiosInstance.patch(`mentoring-request/${id}`, {
+    status: status
+  });
+  return response;
+}

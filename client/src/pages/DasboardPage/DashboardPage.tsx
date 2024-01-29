@@ -3,7 +3,21 @@ import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 
 import NavBar from '../../components/NavBar/NavBar';
-import { DashboardWrapper, DashboardTitle, DashboardContent } from './style';
+import {
+  DashboardWrapper,
+  DashboardTitle,
+  DashboardContent,
+  DashboardBrowser,
+  DashboardMain,
+  DashboardMainFirst,
+  DashboardMainSecond,
+  DashboardGoal,
+  DashboardCalendar,
+  DashboardEtc,
+  MentoringThreadCard,
+  MentoringThreadWrapper,
+  MentoringThreadTitle,
+} from './style';
 
 import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../apis/matchingAPIs';
@@ -36,7 +50,7 @@ const DashboardPage: React.FC = () => {
   if (data) {
     console.log(data);
 
-    if (data.data.user.mentoringArchive.length === 0) {
+    if (data.data.mentoringInfo.length === 0) {
       content = (
         <div>
           <p>
@@ -47,6 +61,16 @@ const DashboardPage: React.FC = () => {
         </div>
       );
     }
+
+    if (data.data.mentoringInfo.length > 0) {
+      content = data.data.mentoringInfo.map((mentoring: any) => {
+        return (
+          <MentoringThreadCard key={mentoring._id}>
+            {mentoring.startDate}
+          </MentoringThreadCard>
+        );
+      });
+    }
   }
 
   return (
@@ -54,7 +78,21 @@ const DashboardPage: React.FC = () => {
       <NavBar />
       <DashboardWrapper>
         <DashboardTitle>Dashboard</DashboardTitle>
-        <DashboardContent>{content}</DashboardContent>
+        <DashboardContent>
+          <DashboardBrowser>
+            <MentoringThreadTitle>Threads</MentoringThreadTitle>
+            <MentoringThreadWrapper>{content}</MentoringThreadWrapper>
+          </DashboardBrowser>
+          <DashboardMain>
+            <DashboardMainFirst>
+              <DashboardGoal />
+            </DashboardMainFirst>
+            <DashboardMainSecond>
+              <DashboardCalendar />
+              <DashboardEtc />
+            </DashboardMainSecond>
+          </DashboardMain>
+        </DashboardContent>
       </DashboardWrapper>
     </>
   );

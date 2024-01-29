@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import User from '../models/userModel';
 import Notification from '../models/notificationModel';
+import MentoringInfo from '../models/mentoringInfo';
 import { hasDuplicates } from '../utils/userUtility';
 
 export const getUserController = async (req: Request, res: Response) => {
@@ -17,7 +18,18 @@ export const getUserController = async (req: Request, res: Response) => {
     // find notification of this user
     const notifications = await Notification.find({ recipientId: userId });
 
-    res.status(200).json({ user, notifications });
+    let mentoringInfo: any = [];
+    if (user.role === 'mentor') {
+      mentoringInfo = await MentoringInfo.find({ "participants.mentorId": userId });
+    } else if (user.role === 'mentee') {
+      mentoringInfo = await MentoringInfo.find({ "participants.menteeId": userId });
+    } else {
+      mentoringInfo = await MentoringInfo.find({ "participants.mentorId": userId });
+      const mentoringInfoAsMentee = await MentoringInfo.find({ "participants.menteeId": userId });
+      mentoringInfo = [...mentoringInfo, ...mentoringInfoAsMentee];
+    }
+
+    res.status(200).json({ user, notifications, mentoringInfo });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

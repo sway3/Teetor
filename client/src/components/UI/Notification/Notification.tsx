@@ -3,7 +3,13 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getNotifications } from '../../../apis/notificationAPIs';
 
-import { NotificationWrapper } from './style';
+import {
+  NotificationText,
+  NotificationTitle,
+  NotificationWrapper,
+  NotificationCard,
+  NotificationImage,
+} from './style';
 import useCloseNotification from '../../../hooks/useCloseNotification';
 import { Link } from 'react-router-dom';
 
@@ -38,16 +44,24 @@ const Notification: React.FC<NotificationProps> = ({ isOpen, onClose }) => {
     const notifications = data.data;
     content = notifications.map((notif: any) => {
       return (
-        <div key={notif._id}>
-          <Link to={`/mentoring-request/${notif._id}`}>{notif.message}</Link>
-        </div>
+        <NotificationCard key={notif._id}>
+          <NotificationImage />
+          <NotificationText>
+            <Link
+              to={`/mentoring-request/${notif._id}`}
+              style={{ color: 'black' }}
+            >
+              <strong>{notif.message}</strong>
+            </Link>
+          </NotificationText>
+        </NotificationCard>
       );
     });
   }
 
   return (
     <NotificationWrapper ref={wrapperRef} className={isOpen ? 'open' : ''}>
-      <div>Notification</div>
+      <NotificationTitle>Notifications</NotificationTitle>
       <div>{content}</div>
     </NotificationWrapper>
   );

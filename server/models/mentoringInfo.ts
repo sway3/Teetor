@@ -6,7 +6,7 @@ interface IMentoringInfo extends mongoose.Document {
     menteeId: string;
   },
   startDate: string;
-  endDate: string;
+  endDate: false;
   status: string;
 }
 
@@ -16,7 +16,7 @@ const mentoringInfoSchema = new mongoose.Schema({
     menteeId: { type: String, required: true },
   },
   startDate: { type: String, required: true },
-  endDate: { type: String, required: true },
+  endDate: { type: String, required: false },
   status: { type: String, required: true },
 });
 

@@ -1,8 +1,11 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import { getMentoringRequest } from '../../apis/matchingAPIs';
+import {
+  getMentoringRequest,
+  setMentoringRequestStatus,
+} from '../../apis/matchingAPIs';
 
 import NavBar from '../../components/NavBar/NavBar';
 import { RequestTitle, RequestWrapper } from './style';
@@ -15,6 +18,18 @@ const MentoringRequestPage: React.FC = () => {
     queryFn: () => getMentoringRequest(notificationId),
   });
 
+  const navigate = useNavigate();
+
+  const acceptRequestHandler = () => {
+    setMentoringRequestStatus(notificationId, 'accepted');
+    navigate('/dashboard');
+  };
+
+  const declineRequestHandler = () => {
+    setMentoringRequestStatus(notificationId, 'declined');
+    navigate('/dashboard');
+  };
+
   let content: React.ReactNode = null;
 
   if (isPending) {
@@ -26,7 +41,18 @@ const MentoringRequestPage: React.FC = () => {
   }
 
   if (data) {
-    content = <div>{data.data.menteeInfo.roleInfo.mentee.description}</div>;
+    const status = data.data.notification.status;
+    if (status === 'pending') {
+      content = (
+        <div>
+          <div>{data.data.menteeInfo.roleInfo.mentee.description}</div>
+          <button onClick={acceptRequestHandler}>accept</button>
+          <button onClick={declineRequestHandler}>decline</button>
+        </div>
+      );
+    } else {
+      content = <div>{data.data.menteeInfo.roleInfo.mentee.description}</div>;
+    }
   }
 
   return (
