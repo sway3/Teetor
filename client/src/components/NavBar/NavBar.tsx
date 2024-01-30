@@ -13,6 +13,7 @@ import {
   ButtonWrapper,
   LoginButton,
   SignUpButton,
+  ProfileImg,
 } from './style';
 
 import Notification from '../UI/Notification/Notification';
@@ -20,6 +21,8 @@ import Notification from '../UI/Notification/Notification';
 const NavBar: React.FC = () => {
   const [isNotificationOpen, setIsNotificationOpen] =
     React.useState<boolean>(false);
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(true);
 
   return (
     <>
@@ -43,10 +46,16 @@ const NavBar: React.FC = () => {
         </NavBarInnerWrapper>
         <LoginWrapper>
           <LoginInnerWrapper>
-            <ButtonWrapper>
-              <LoginButton>Login</LoginButton>
-              <SignUpButton>Sign Up</SignUpButton>
-            </ButtonWrapper>
+            {isLoggedIn ? (
+              <Link to='/profile'>
+                <ProfileImg />
+              </Link>
+            ) : (
+              <ButtonWrapper>
+                <LoginButton>Login</LoginButton>
+                <SignUpButton>Sign Up</SignUpButton>
+              </ButtonWrapper>
+            )}
           </LoginInnerWrapper>
         </LoginWrapper>
       </NavBarWrapper>

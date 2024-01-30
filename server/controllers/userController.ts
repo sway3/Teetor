@@ -49,10 +49,17 @@ export const getMentorsController = async (req: Request, res: Response) => {
     const menteeDiscipline = user.roleInfo?.mentee.discipline;
     const menteeNeedHelpWith = user.roleInfo?.mentee.needHelpWith || [];
 
+    const activeSessions = await MentoringInfo.find({ 'participants.menteeId': userId });
+    const activeMentors = activeSessions.map((session) => session.participants.mentorId);
+
     console.log('menteeDiscipline: ', menteeDiscipline);
     console.log('menteeNeedHelpWith: ', menteeNeedHelpWith);
 
     const filteredMentors = mentors.filter((mentor) => {
+      if (activeMentors.includes(mentor._id.toString())) {
+        return false;
+      }
+
       const mentorProfession = mentor?.roleInfo?.mentor.profession || '';
       const mentorCanHelpWith = mentor?.roleInfo?.mentor.canHelpWith || [];
 

@@ -84,3 +84,11 @@ export const SignUpButton = styled.button`
     opacity: 0.8;
   }
 `;
+
+export const ProfileImg = styled.div`
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #000;
+`;
