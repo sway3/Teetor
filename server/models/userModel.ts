@@ -11,17 +11,11 @@ interface IUser extends Document {
   description: string;
   email: string;
   roleInfo: {
-    mentor: {
-      profession: string;
-      canHelpWith: string[];
-      description: string;
-    },
-    mentee: {
-      discipline: string;
-      needHelpWith: string[];
-      description: string;
-    }
-  };
+    discipline: string;
+    role: string;
+    skills: string[];
+    description: string;
+  }[];
   qualification: {
     university: string;
   };
@@ -31,6 +25,7 @@ interface IUser extends Document {
   };
   connections: string[]; // Array of user IDs or user objects, depending on your design
   mentoringArchive: string[]; // Replace 'any' with a more specific type if possible
+  availableDays: string[];
 }
 
 const userSchema = new mongoose.Schema({
@@ -43,18 +38,12 @@ const userSchema = new mongoose.Schema({
   profileImg: { type: String, required: true },
   description: { type: String, required: true },
   email: { type: String, required: true },
-  roleInfo: {
-    mentor: {
-      profession: { type: String, required: false },
-      canHelpWith: { type: [String], required: false },
-      description: { type: String, required: false },
-    },
-    mentee: {
-      discipline: { type: String, required: false },
-      needHelpWith: { type: [String], required: false },
-      description: { type: String, required: false },
-    },      
-  },
+  roleInfo: [{
+    discipline: { type: String, required: true },
+    role: { type: String, required: true },
+    skills: [{ type: String, required: true }],
+    description: { type: String, required: true },
+  }],
   qualification: {
     university: { type: String, required: true },
   },
@@ -64,6 +53,7 @@ const userSchema = new mongoose.Schema({
   },
   connections: { type: [String], required: true },
   mentoringArchive: { type: [String], required: true },
+  availableDays: { type: [String], required: true },
 });
 
 const User = mongoose.model<IUser>('users', userSchema);

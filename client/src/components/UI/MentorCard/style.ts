@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const MentorCardWrapper = styled.div`
+export const MentorCardWrapper = styled(Link)`
   display: flex;
   flex-direction: column;
   justify-content: center;

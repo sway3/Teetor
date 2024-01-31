@@ -22,8 +22,6 @@ import RoleInfo from '../../components/common/RoleInfo/RoleInfo';
 const ProfilePage: React.FC = () => {
   const id: string = DUMMY_USER_ID;
 
-  const availableDays = ['Mon', 'Tue', 'Wed'];
-
   const { data, isPending, error } = useQuery({
     queryKey: ['getUser', id],
     queryFn: () => getUser(id),
@@ -55,6 +53,7 @@ const ProfilePage: React.FC = () => {
     // };
 
     const roleInfo = data?.data.user.roleInfo;
+    const availableDays = data?.data.user.availableDays;
 
     content = (
       <ProfilePageContent>

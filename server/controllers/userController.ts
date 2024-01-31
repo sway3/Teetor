@@ -46,13 +46,19 @@ export const getMentorsController = async (req: Request, res: Response) => {
 
     const mentors = await User.find({ role: 'mentor' });
 
-    const menteeDiscipline = user.roleInfo?.mentee.discipline;
-    const menteeNeedHelpWith = user.roleInfo?.mentee.needHelpWith || [];
+    console.log(mentors);
+
+    let menteeNeedHelpWith: any = null;
+
+    user.roleInfo.forEach((n, i) => {
+      if (n.role === 'mentee') {
+        menteeNeedHelpWith = n.skills;
+      }
+    })
 
     const activeSessions = await MentoringInfo.find({ 'participants.menteeId': userId });
     const activeMentors = activeSessions.map((session) => session.participants.mentorId);
 
-    console.log('menteeDiscipline: ', menteeDiscipline);
     console.log('menteeNeedHelpWith: ', menteeNeedHelpWith);
 
     const filteredMentors = mentors.filter((mentor) => {
@@ -60,17 +66,23 @@ export const getMentorsController = async (req: Request, res: Response) => {
         return false;
       }
 
-      const mentorProfession = mentor?.roleInfo?.mentor.profession || '';
-      const mentorCanHelpWith = mentor?.roleInfo?.mentor.canHelpWith || [];
+      let mentorCanHelpWith: any = null;
 
-      console.log('mentorProfession: ', mentorProfession);
+      mentor.roleInfo.forEach((n, i) => {
+        if (n.role === 'mentor') {
+          mentorCanHelpWith = n.skills;
+        }
+      })
+
       console.log('mentorCanHelpWith: ', mentorCanHelpWith);
 
-      if (mentorProfession === menteeDiscipline) {
-        if (hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith)) {
-          return true;
-        }
+      const mentorAvailableDays = mentor.availableDays;
+      const menteeAvailableDays = user.availableDays;
+
+      if (hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith) && hasDuplicates(mentorAvailableDays, menteeAvailableDays)) {
+        return true;
       }
+
       return false;
     });
 
