@@ -1,15 +1,20 @@
 import styled from 'styled-components';
 
 export const ProfilePageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 2rem 5rem;
 `;
 
 export const ProfilePageContent = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 2rem;
   justify-content: center;
+  width: 50rem;
 `;
-
+  
 export const PageContentLeft = styled.div`
   display: flex;
   flex-direction: column;
@@ -70,6 +75,7 @@ export const SNSTitle = styled.h2`
 export const SNSInfoWrapper = styled.div`
   display: flex;
   gap: 1rem;
+  margin-top: 1rem;
 `;
 
 export const SNSInfo = styled.div`

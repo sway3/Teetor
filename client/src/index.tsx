@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { StyleSheetManager } from 'styled-components';
 import App from './App';
 
 const root = ReactDOM.createRoot(
@@ -7,7 +8,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <StyleSheetManager shouldForwardProp={() => true}>
+      <App />
+    </StyleSheetManager>
   </React.StrictMode>
 );
 

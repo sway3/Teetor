@@ -9,35 +9,20 @@ import NavBar from '../../components/NavBar/NavBar';
 import {
   ProfilePageWrapper,
   ProfilePageContent,
-  PageContentLeft,
-  PageContentRight,
   PersonalInfoWrapper,
-  UserName,
-  ProfileImg,
-  FullName,
-  Email,
-  SNSWrapper,
   SNSInfo,
-  RoleInfo,
-  RoleInfoTitle,
-  RoleInfoWrapper,
-  RoleInfoContent,
-  RoleInfoContentTitle,
-  SkillsWrapper,
-  Skills,
-  Description,
-  AvailableDayWrapper,
-  AvailableDayTitle,
   AvailableDayContentWrapper,
-  AvailableDayContent,
-  AvailableDay,
-  AvailableDayBox,
-  SNSTitle,
   SNSInfoWrapper,
 } from './style';
 
+import AvailableDay from '../../components/common/AvailableDay/AvailableDay';
+import UserInfo from '../../components/common/UserInfo/UserInfo';
+import RoleInfo from '../../components/common/RoleInfo/RoleInfo';
+
 const ProfilePage: React.FC = () => {
   const id: string = DUMMY_USER_ID;
+
+  const availableDays = ['Mon', 'Tue', 'Wed'];
 
   const { data, isPending, error } = useQuery({
     queryKey: ['getUser', id],
@@ -55,80 +40,38 @@ const ProfilePage: React.FC = () => {
   }
 
   if (data) {
+    const userInfo = {
+      userName: data?.data.user.userName,
+      fullName: `${data?.data.user.firstName} ${data?.data.user.lastName}`,
+      email: data?.data.user.email,
+      role: data?.data.user.role,
+    };
+
+    // const roleInfo = {
+    //   role: data?.data.user.roleInfo.role,
+    //   discipline: data?.data.user.roleInfo.discipline,
+    //   skills: data?.data.user.roleInfo.skills,
+    //   description: data?.data.user.roleInfo.description,
+    // };
+
+    const roleInfo = data?.data.user.roleInfo;
+
     content = (
       <ProfilePageContent>
-        <PageContentLeft>
-          <PersonalInfoWrapper>
-            <ProfileImg />
-            <FullName>{`${data?.data.user.firstName} ${data?.data.user.lastName}`}</FullName>
-            <UserName>{`@${data?.data.user.userName}`}</UserName>
-          </PersonalInfoWrapper>
-          <RoleInfoWrapper>
-            <RoleInfoContentTitle>I can help you with...</RoleInfoContentTitle>
-            <SkillsWrapper>
-              <Skills>Java</Skills>
-              <Skills>Object-Oriented Programming</Skills>
-              <Skills>MySQL</Skills>
-            </SkillsWrapper>
-            <Description>
-              I can help you with Java, Object-Oriented Programming, and MySQL.
-            </Description>
-          </RoleInfoWrapper>
-          <RoleInfoWrapper>
-            <RoleInfoContentTitle>I need help with...</RoleInfoContentTitle>
-            <SkillsWrapper>
-              <Skills>Java</Skills>
-              <Skills>Object-Oriented Programming</Skills>
-              <Skills>MySQL</Skills>
-            </SkillsWrapper>
-            <Description>
-              I can help you with Java, Object-Oriented Programming, and MySQL.
-            </Description>
-          </RoleInfoWrapper>
-        </PageContentLeft>
-        <PageContentRight>
-          <SNSWrapper>
-            <SNSTitle>Links</SNSTitle>
-            <SNSInfoWrapper>
-              <SNSInfo />
-              <SNSInfo />
-              <SNSInfo />
-            </SNSInfoWrapper>
-          </SNSWrapper>
-          <AvailableDayWrapper>
-            <AvailableDayTitle>Available Days</AvailableDayTitle>
-            <AvailableDayContentWrapper>
-              <AvailableDayContent>
-                <AvailableDay>Mon</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Tue</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Wed</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Thu</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Fri</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Sat</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-              <AvailableDayContent>
-                <AvailableDay>Sun</AvailableDay>
-                <AvailableDayBox />
-              </AvailableDayContent>
-            </AvailableDayContentWrapper>
-          </AvailableDayWrapper>
-        </PageContentRight>
+        <PersonalInfoWrapper>
+          <UserInfo user={userInfo} />
+          <SNSInfoWrapper>
+            <SNSInfo />
+            <SNSInfo />
+            <SNSInfo />
+          </SNSInfoWrapper>
+          <AvailableDayContentWrapper>
+            <AvailableDay availableDays={availableDays} />
+          </AvailableDayContentWrapper>
+        </PersonalInfoWrapper>
+        {roleInfo.map((role: any, i: number) => (
+          <RoleInfo key={i} roleInfo={role} />
+        ))}
       </ProfilePageContent>
     );
   }
