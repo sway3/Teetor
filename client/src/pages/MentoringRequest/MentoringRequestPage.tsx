@@ -45,7 +45,6 @@ const MentoringRequestPage: React.FC = () => {
     if (status === 'pending') {
       content = (
         <div>
-          <div>{data.data.menteeInfo.roleInfo.mentee.description}</div>
           <button onClick={acceptRequestHandler}>accept</button>
           <button onClick={declineRequestHandler}>decline</button>
         </div>

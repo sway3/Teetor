@@ -7,7 +7,7 @@ interface MentorCardProps {
 }
 
 const MentorCard: React.FC<MentorCardProps> = ({ children }) => {
-  return <MentorCardWrapper to={`/mentor-info`}>{children}</MentorCardWrapper>;
+  return <MentorCardWrapper>{children}</MentorCardWrapper>;
 };
 
 export default MentorCard;
