@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 
@@ -24,10 +24,18 @@ import { getUser } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
 
 import { DUMMY_USER_ID } from '../../config/config';
+import ChatButton from '../../components/common/Chat/ChatButton';
+import Chat from '../../components/common/Chat/Chat';
 
 const userID = DUMMY_USER_ID;
 
 const DashboardPage: React.FC = () => {
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+
+  const handleChatButtonClick = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   const id: string = userID;
 
   localStorage.setItem('userID', id);
@@ -94,6 +102,8 @@ const DashboardPage: React.FC = () => {
           </DashboardMain>
         </DashboardContent>
       </DashboardWrapper>
+      <ChatButton onClick={handleChatButtonClick} />
+      <Chat isOpen={isChatOpen} onClose={handleChatButtonClick} />
     </>
   );
 };
