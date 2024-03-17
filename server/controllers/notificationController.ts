@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import Notification from '../models/notificationModel';
-import MentoringInfo from '../models/mentoringInfo';
+import MentoringInfo from '../models/mentoringSessionModel';
 import User from '../models/userModel';
 
 export const getNotificationsController = async (req: Request, res: Response) => {

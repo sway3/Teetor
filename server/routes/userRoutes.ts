@@ -1,10 +1,20 @@
 import express from 'express';
-import { getUserController, getMentorsController } from '../controllers/userController';
-import { getNotificationsController, mentoringRequestController, getMentoringRequestController, controlMentoringRequestController } from '../controllers/notificationController';
+import {
+  getUserInfoController,
+  getMentorsController,
+} from '../controllers/userController';
+import {
+  getNotificationsController,
+  mentoringRequestController,
+  getMentoringRequestController,
+  controlMentoringRequestController,
+} from '../controllers/notificationController';
+import { getDashInfoController } from '../controllers/dashboardController';
 
 const router = express.Router();
 
-router.get('/users/:id', getUserController);
+router.get('/dashboard/:id', getDashInfoController);
+router.get('/users/:id', getUserInfoController);
 router.get('/users/:id/mentors', getMentorsController);
 router.get('/users/:id/notifications', getNotificationsController);
 router.post('/mentoring-request', mentoringRequestController);

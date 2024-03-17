@@ -9,6 +9,8 @@ import MatchingPage from './pages/MatchingPage/MatchingPage';
 import MentoringRequestPage from './pages/MentoringRequest/MentoringRequestPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import MentorInfoPage from './pages/MentorInfoPage/MentorInfoPage';
+import MessagesPage from './pages/MessagesPage/MessagesPage';
+import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 
 interface ServerResponse {
   message: string;
@@ -32,15 +34,38 @@ const App: React.FC = () => {
         <GlobalStyles />
         <Router>
           <Routes>
-            <Route path='/' element={<h1>Home Page</h1>} />
-            <Route path='/dashboard' element={<DashboardPage />} />
-            <Route path='/match' element={<MatchingPage />} />
+            <Route
+              path='/'
+              element={<h1>Home Page</h1>}
+            />
+            <Route
+              path='/dashboard'
+              element={<DashboardPage />}
+            />
+            <Route
+              path='/match'
+              element={<MatchingPage />}
+            />
             <Route
               path='/mentoring-request/:id'
               element={<MentoringRequestPage />}
             />
-            <Route path='/profile' element={<ProfilePage />} />
-            <Route path='/mentor-info' element={<MentorInfoPage />} />
+            <Route
+              path='/profile'
+              element={<ProfilePage />}
+            />
+            <Route
+              path='/mentor-info'
+              element={<MentorInfoPage />}
+            />
+            <Route
+              path='/messages'
+              element={<MessagesPage />}
+            />
+            <Route
+              path='/edit'
+              element={<EditProfilePage />}
+            />
           </Routes>
         </Router>
       </QueryClientProvider>

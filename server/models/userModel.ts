@@ -1,21 +1,17 @@
 import mongoose, { Document } from 'mongoose';
 
-interface IUser extends Document {
+export interface IUser extends Document {
   userName: string;
   firstName: string;
-  middleName: string | null;
   lastName: string;
-  role: 'mentee' | 'mentor'; // Assuming role can be 'mentee' or 'mentor'
-  birthday: string; // Or Date if you prefer to work with Date objects
+  role: string;
+  birthday: string;
   profileImg: string;
   description: string;
   email: string;
-  roleInfo: {
-    discipline: string;
-    role: string;
-    skills: string[];
-    description: string;
-  }[];
+  mentorProfession: string[];
+  mentorCanHelpWith: string[];
+  mentorDescription: string;
   qualification: {
     university: string;
   };
@@ -31,19 +27,15 @@ interface IUser extends Document {
 const userSchema = new mongoose.Schema({
   userName: { type: String, required: true },
   firstName: { type: String, required: true },
-  middleName: { type: String },
   lastName: { type: String, required: true },
   role: { type: String, required: true },
   birthday: { type: String, required: true },
   profileImg: { type: String, required: true },
   description: { type: String, required: true },
   email: { type: String, required: true },
-  roleInfo: [{
-    discipline: { type: String, required: true },
-    role: { type: String, required: true },
-    skills: [{ type: String, required: true }],
-    description: { type: String, required: true },
-  }],
+  mentorProfession: { type: [String], required: false },
+  mentorCanHelpWith: { type: [String], required: false },
+  mentorDescription: { type: String, required: false },
   qualification: {
     university: { type: String, required: true },
   },
@@ -56,6 +48,6 @@ const userSchema = new mongoose.Schema({
   availableDays: { type: [String], required: true },
 });
 
-const User = mongoose.model<IUser>('users', userSchema);
+const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;

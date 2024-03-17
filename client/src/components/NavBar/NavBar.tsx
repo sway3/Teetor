@@ -36,6 +36,9 @@ const NavBar: React.FC = () => {
             <NavItem>
               <Link to='/forum'>Forum</Link>
             </NavItem>
+            <NavItem>
+              <Link to='/messages'>Messages</Link>
+            </NavItem>
             <NavItem onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
               Notification
             </NavItem>

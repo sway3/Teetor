@@ -1,39 +1,17 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import User from '../models/userModel';
 import Notification from '../models/notificationModel';
-import MentoringInfo from '../models/mentoringInfo';
+import MentoringInfo from '../models/mentoringSessionModel';
 import { hasDuplicates } from '../utils/userUtility';
+import mongoose from 'mongoose';
+import { getUserInfo } from '../utils/functions';
 
-export const getUserController = async (req: Request, res: Response) => {
+export const getUserInfoController = async (req: Request, res: Response) => {
   const userId = req.params.id;
+  const userInfo = await getUserInfo(userId);
 
-  console.log('userId: ', userId)
-
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // find notification of this user
-    const notifications = await Notification.find({ recipientId: userId });
-
-    let mentoringInfo: any = [];
-    if (user.role === 'mentor') {
-      mentoringInfo = await MentoringInfo.find({ "participants.mentorId": userId });
-    } else if (user.role === 'mentee') {
-      mentoringInfo = await MentoringInfo.find({ "participants.menteeId": userId });
-    } else {
-      mentoringInfo = await MentoringInfo.find({ "participants.mentorId": userId });
-      const mentoringInfoAsMentee = await MentoringInfo.find({ "participants.menteeId": userId });
-      mentoringInfo = [...mentoringInfo, ...mentoringInfoAsMentee];
-    }
-
-    res.status(200).json({ user, notifications, mentoringInfo });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
+  return res.json(userInfo);
+};
 
 export const getMentorsController = async (req: Request, res: Response) => {
   const userId = req.params.id;
@@ -48,40 +26,31 @@ export const getMentorsController = async (req: Request, res: Response) => {
 
     console.log(mentors);
 
-    let menteeNeedHelpWith: any = null;
-
-    user.roleInfo.forEach((n, i) => {
-      if (n.role === 'mentee') {
-        menteeNeedHelpWith = n.skills;
-      }
-    })
-
-    const activeSessions = await MentoringInfo.find({ 'participants.menteeId': userId });
-    const activeMentors = activeSessions.map((session) => session.participants.mentorId);
-
-    console.log('menteeNeedHelpWith: ', menteeNeedHelpWith);
+    const activeSessions = await MentoringInfo.find({
+      'participants.menteeId': userId,
+    });
+    const activeMentors = activeSessions.map(
+      (session) => session.participants.mentorId
+    );
 
     const filteredMentors = mentors.filter((mentor) => {
       if (activeMentors.includes(mentor._id.toString())) {
         return false;
       }
 
-      let mentorCanHelpWith: any = null;
-
-      mentor.roleInfo.forEach((n, i) => {
-        if (n.role === 'mentor') {
-          mentorCanHelpWith = n.skills;
-        }
-      })
+      let mentorCanHelpWith = mentor.mentorCanHelpWith;
 
       console.log('mentorCanHelpWith: ', mentorCanHelpWith);
 
       const mentorAvailableDays = mentor.availableDays;
       const menteeAvailableDays = user.availableDays;
 
-      if (hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith) && hasDuplicates(mentorAvailableDays, menteeAvailableDays)) {
-        return true;
-      }
+      // if (
+      //   hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith) &&
+      //   hasDuplicates(mentorAvailableDays, menteeAvailableDays)
+      // ) {
+      //   return true;
+      // }
 
       return false;
     });
@@ -90,4 +59,4 @@ export const getMentorsController = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-}
+};

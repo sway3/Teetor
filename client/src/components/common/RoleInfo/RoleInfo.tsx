@@ -12,29 +12,20 @@ import {
 
 interface RoleInfoProps {
   roleInfo: {
-    role: string;
-    discipline: string;
-    skills: string[];
+    profession: string[];
+    canHelpWith: string[];
     description: string;
   };
 }
 
 const RoleInfo: React.FC<RoleInfoProps> = ({ roleInfo }) => {
-  let title: string = '';
-
-  if (roleInfo.role === 'mentor') {
-    title = 'I can help with...';
-  } else if (roleInfo.role === 'mentee') {
-    title = 'I need help with...';
-  }
-
   return (
     <RoleInfoWrapper>
-      <RoleInfoTitle>{title}</RoleInfoTitle>
+      <RoleInfoTitle>Mentor</RoleInfoTitle>
       <SkillsWrapper>
-        {roleInfo.skills.map((skill, index) => {
-          return <Skills key={index}>{skill}</Skills>;
-        })}
+        {roleInfo.profession.map((prof, index) => (
+          <Skills key={index}>{prof}</Skills>
+        ))}
       </SkillsWrapper>
       <Description>{roleInfo.description}</Description>
     </RoleInfoWrapper>

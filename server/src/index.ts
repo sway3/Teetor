@@ -4,7 +4,7 @@ import userRoutes from '../routes/userRoutes';
 import config from './config';
 import http from 'http';
 import { Server } from 'socket.io';
-import Message from '../models/message';
+import Message from '../models/messageModel';
 
 import { registerChatHandlers } from '../controllers/socketManager';
 
@@ -24,10 +24,32 @@ mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected'))
   .catch((err: any) => console.log(err));
 
-io.on('connection', (socket) => {
-  console.log('a user connected', socket.id);
-  registerChatHandlers(io, socket);
-})
+  io.on('connection', (socket) => {
+    console.log(`User connected: ${socket.id}`);
+  
+    // Load existing messages and emit to the newly connected client
+    Message.find().sort({ timestamp: 1 }).then(messages => {
+      socket.emit('initial_messages', messages);
+    });
+  
+    socket.on('send_message', (data) => {
+      if (!data.content.trim()) {
+        // Prevent sending empty messages
+        return;
+      }
+  
+      const newMessage = new Message({
+        senderId: data.senderId,
+        recipientId: data.recipientId,
+        content: data.content,
+        timestamp: new Date() // Ensure the timestamp is set when creating a message
+      });
+  
+      newMessage.save().then(savedMessage => {
+        io.emit('new_message', savedMessage); // Broadcast to all clients
+      }).catch(err => console.error('Error saving message:', err));
+    });
+  });
 
 const cors = require('cors');
 app.use(cors());

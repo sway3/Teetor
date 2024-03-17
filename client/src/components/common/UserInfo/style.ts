@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const UserInfoWrapper = styled.div`
   display: flex;
@@ -12,6 +13,7 @@ export const ProfileImg = styled.div`
   width: 13rem;
   height: 13rem;
   border-radius: 50%;
+  margin-bottom: 1rem;
   background-color: #000;
 `;
 
@@ -31,10 +33,20 @@ export const Email = styled.p`
   font-size: 1rem;
   font-weight: 200;
   color: #000;
+  margin-bottom: 1rem;
 `;
 
 export const Role = styled.p`
   font-size: 1rem;
   font-weight: 200;
+  color: #000;
+`;
+
+export const EditButton = styled(Link)`
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #dedede;
+  border-radius: 1rem;
+  background-color: #f2f2f2;
   color: #000;
 `;

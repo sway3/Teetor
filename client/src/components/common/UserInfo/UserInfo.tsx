@@ -7,6 +7,7 @@ import {
   UserName,
   Email,
   Role,
+  EditButton,
 } from './style';
 
 interface UserInfoProps {
@@ -14,7 +15,6 @@ interface UserInfoProps {
     userName: string;
     fullName: string;
     email: string;
-    role: string;
   };
 }
 
@@ -25,7 +25,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ user }) => {
       <FullName>{user.fullName}</FullName>
       <UserName>{user.userName}</UserName>
       <Email>{user.email}</Email>
-      <Role>{user.role}</Role>
+      <EditButton to='/edit'>Edit Profile</EditButton>
     </UserInfoWrapper>
   );
 };

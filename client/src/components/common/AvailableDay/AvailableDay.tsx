@@ -9,10 +9,17 @@ import {
 
 interface AvailableDayProps {
   availableDays: string[];
+  isEditable: boolean;
 }
 
-const AvailableDay: React.FC<AvailableDayProps> = ({ availableDays }) => {
+const AvailableDay: React.FC<AvailableDayProps> = ({
+  availableDays,
+  isEditable,
+}) => {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  if (isEditable) {
+  }
 
   return (
     <AvailableDayContentWrapper>
@@ -20,7 +27,10 @@ const AvailableDay: React.FC<AvailableDayProps> = ({ availableDays }) => {
         return (
           <AvailableDayContent key={index}>
             <Day>{day}</Day>
-            <AvailableDayBox $isavailable={availableDays.includes(day)} />
+            <AvailableDayBox
+              key={index}
+              $isavailable={availableDays.includes(day)}
+            />
           </AvailableDayContent>
         );
       })}

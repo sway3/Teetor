@@ -1,5 +1,5 @@
 // controllers/chatController.ts
-import Message from '../models/message';
+import Message from '../models/messageModel';
 
 // TypeScript interface for message data
 interface IMessageData {

@@ -1,5 +1,4 @@
 import React, { ReactNode, useState } from 'react';
-import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 
 import NavBar from '../../components/NavBar/NavBar';
@@ -20,12 +19,10 @@ import {
 } from './style';
 
 import { useQuery } from '@tanstack/react-query';
-import { getUser } from '../../apis/matchingAPIs';
+import { getDashInfo } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
 
 import { DUMMY_USER_ID } from '../../config/config';
-import ChatButton from '../../components/common/Chat/ChatButton';
-import Chat from '../../components/common/Chat/Chat';
 
 const userID = DUMMY_USER_ID;
 
@@ -42,7 +39,7 @@ const DashboardPage: React.FC = () => {
 
   const { data, isPending, error } = useQuery<AxiosResponse>({
     queryKey: ['user', id],
-    queryFn: () => getUser(id),
+    queryFn: () => getDashInfo(id),
   });
 
   let content: ReactNode = null;
@@ -58,7 +55,7 @@ const DashboardPage: React.FC = () => {
   if (data) {
     console.log(data);
 
-    if (data.data.mentoringInfo.length === 0) {
+    if (data.data.mentoringSessions.length === 0) {
       content = (
         <div>
           <p>
@@ -70,8 +67,8 @@ const DashboardPage: React.FC = () => {
       );
     }
 
-    if (data.data.mentoringInfo.length > 0) {
-      content = data.data.mentoringInfo.map((mentoring: any) => {
+    if (data.data.mentoringSessions.length > 0) {
+      content = data.data.mentoringSessions.map((mentoring: any) => {
         return (
           <MentoringThreadCard key={mentoring._id}>
             {mentoring.startDate}
@@ -102,8 +99,6 @@ const DashboardPage: React.FC = () => {
           </DashboardMain>
         </DashboardContent>
       </DashboardWrapper>
-      <ChatButton onClick={handleChatButtonClick} />
-      <Chat isOpen={isChatOpen} onClose={handleChatButtonClick} />
     </>
   );
 };

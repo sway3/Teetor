@@ -23,7 +23,7 @@ const ProfilePage: React.FC = () => {
   const id: string = DUMMY_USER_ID;
 
   const { data, isPending, error } = useQuery({
-    queryKey: ['getUser', id],
+    queryKey: ['getUserInfo', id],
     queryFn: () => getUser(id),
   });
 
@@ -39,21 +39,23 @@ const ProfilePage: React.FC = () => {
 
   if (data) {
     const userInfo = {
-      userName: data?.data.user.userName,
-      fullName: `${data?.data.user.firstName} ${data?.data.user.lastName}`,
-      email: data?.data.user.email,
-      role: data?.data.user.role,
+      userName: data?.data.userName,
+      fullName: `${data?.data.firstName} ${data?.data.lastName}`,
+      email: data?.data.email,
+      role: data?.data.role,
     };
 
-    // const roleInfo = {
-    //   role: data?.data.user.roleInfo.role,
-    //   discipline: data?.data.user.roleInfo.discipline,
-    //   skills: data?.data.user.roleInfo.skills,
-    //   description: data?.data.user.roleInfo.description,
-    // };
+    const availableDays = data?.data.availableDays;
 
-    const roleInfo = data?.data.user.roleInfo;
-    const availableDays = data?.data.user.availableDays;
+    let roleInfo: any = null;
+
+    if (userInfo.role !== 'mentee') {
+      roleInfo = {
+        profession: data?.data.mentorProfession,
+        canHelpWith: data?.data.mentorCanHelpWith,
+        description: data?.data.mentorDescription,
+      };
+    }
 
     content = (
       <ProfilePageContent>
@@ -68,9 +70,7 @@ const ProfilePage: React.FC = () => {
             <AvailableDay availableDays={availableDays} />
           </AvailableDayContentWrapper>
         </PersonalInfoWrapper>
-        {roleInfo.map((role: any, i: number) => (
-          <RoleInfo key={i} roleInfo={role} />
-        ))}
+        {data?.data.role !== 'mentee' && <RoleInfo roleInfo={roleInfo} />}
       </ProfilePageContent>
     );
   }

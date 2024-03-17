@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
-import MentoringInfo from '../models/mentoringInfo';
+import MentoringInfo from '../models/mentoringSessionModel';
 
 export const getMentoringInfoController = async (req: Request, res: Response) => {
   const userId = req.params.id;

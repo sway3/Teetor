@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
-interface INotification extends mongoose.Document {
+export interface INotification extends Document {
   recipientId: string;
   senderId: string;
   type: string;
@@ -19,7 +19,8 @@ const notificationSchema = new mongoose.Schema({
 });
 
 const Notification = mongoose.model<INotification>(
-  'notification', notificationSchema, 'notification'
+  'Notifications',
+  notificationSchema
 );
 
 export default Notification;
