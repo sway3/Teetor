@@ -9,12 +9,14 @@ import {
 
 interface AvailableDayProps {
   availableDays: string[];
-  isEditable: boolean;
+  isEditable?: boolean;
+  onUpdateDays?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const AvailableDay: React.FC<AvailableDayProps> = ({
   availableDays,
   isEditable,
+  onUpdateDays,
 }) => {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -29,6 +31,8 @@ const AvailableDay: React.FC<AvailableDayProps> = ({
             <Day>{day}</Day>
             <AvailableDayBox
               key={index}
+              data-name={day}
+              onClick={onUpdateDays}
               $isavailable={availableDays.includes(day)}
             />
           </AvailableDayContent>

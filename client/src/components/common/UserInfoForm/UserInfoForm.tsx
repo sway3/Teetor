@@ -30,36 +30,106 @@ interface UserData {
   email?: string;
   birthday?: string;
   description?: string;
-  role?: string;
+  role?: string[];
   availableDays?: string[];
   mentorProfession?: string[];
   mentorCanHelpWith?: string[];
-  mentorDescription?: string[];
+  mentorDescription?: string;
 }
 
 const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
-  const [userData, setUserData] = useState<UserData>({});
-  const [activeRoles, setActiveRoles] = useState<string[]>([]);
+  const [userData, setUserData] = useState<UserData>({
+    firstName: '',
+    lastName: '',
+    userName: '',
+    email: '',
+    birthday: '',
+    description: '',
+    role: [],
+    availableDays: [],
+  });
 
   useEffect(() => {
     setUserData(userInfo);
   }, []);
 
-  const roleButtonHandler = (role: string): void => {
-    setActiveRoles((prevActive) => {
-      return prevActive.includes(role)
-        ? prevActive.filter((target) => target !== role) // Remove option if it exists
-        : [...prevActive, role]; // Add option if it doesn't exist
+  const formChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const availableDaysHandler = (e: React.MouseEvent<HTMLElement>): void => {
+    const targetDay = e.currentTarget.getAttribute('data-name') || '';
+
+    setUserData((prev) => {
+      const prevDays = prev.availableDays ?? [];
+      const newDays = prevDays?.includes(targetDay)
+        ? prevDays.filter((day) => day !== targetDay)
+        : [...prevDays, targetDay];
+
+      return {
+        ...prev,
+        availableDays: newDays,
+      };
     });
+  };
+
+  const roleButtonHandler = (role: string): void => {
+    if (role === 'Mentor') {
+      if (userData.role?.includes('Mentor')) {
+        setUserData((prev) => {
+          const {
+            mentorProfession,
+            mentorCanHelpWith,
+            mentorDescription,
+            ...userInfo
+          } = prev;
+
+          const prevRole = userInfo.role ?? [];
+          const newRole = prevRole.filter((target) => target !== role);
+
+          return {
+            ...userInfo,
+            role: newRole,
+          };
+        });
+      } else {
+        setUserData((prev) => {
+          const prevRole = prev.role ?? [];
+          const newRole = [...prevRole, role];
+
+          return {
+            ...prev,
+            role: newRole,
+            mentorProfession: [],
+            mentorCanHelpWith: [],
+            mentorDescription: '',
+          };
+        });
+      }
+    } else {
+      setUserData((prev) => {
+        const prevRole = prev.role ?? [];
+        const newRole = prevRole.includes(role)
+          ? prevRole.filter((target) => target !== role)
+          : [...prevRole, role];
+
+        return {
+          ...prev,
+          role: newRole,
+        };
+      });
+    }
   };
 
   const formSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
   };
-
-  const formChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {};
 
   return (
     <FormContainer>
@@ -70,7 +140,9 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
               <Label>First name</Label>
               <Input
                 type='text'
+                name='firstName'
                 value={userData.firstName}
+                onChange={formChangeHandler}
                 width='14rem'
                 margin='0 1rem 1.5rem 0'
               />
@@ -79,7 +151,9 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
               <Label>Last name</Label>
               <Input
                 type='text'
+                name='lastName'
                 value={userData.lastName}
+                onChange={formChangeHandler}
                 width='14rem'
               />
             </div>
@@ -87,22 +161,30 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
           <Label>Username</Label>
           <Input
             type='text'
+            name='userName'
             value={userData.userName}
+            onChange={formChangeHandler}
           />
           <Label>Email</Label>
           <Input
             type='text'
+            name='email'
             value={userData.email}
+            onChange={formChangeHandler}
           />
           <Label>Birthday</Label>
           <Input
             type='text'
+            name='birthday'
             value={userData.birthday}
+            onChange={formChangeHandler}
           />
           <Label>Description</Label>
           <Input
             type='text'
+            name='description'
             value={userData.description}
+            onChange={formChangeHandler}
           />
         </div>
         <LinksWrapper>
@@ -126,30 +208,40 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
             />
           </Links>
         </LinksWrapper>
-        <AvailableDay availableDays={userData.availableDays || []} />
+        <AvailableDay
+          availableDays={userData.availableDays || []}
+          isEditable={true}
+          onUpdateDays={availableDaysHandler}
+        />
         <RoleWrapper>
           <RoleButton
-            $isActive={activeRoles.includes('Mentor')}
+            $isActive={userData.role?.includes('Mentor') ?? false}
             onClick={() => roleButtonHandler('Mentor')}
           >
             Mentor
           </RoleButton>
           <RoleButton
-            $isActive={activeRoles.includes('Mentee')}
+            $isActive={userData.role?.includes('Mentee') ?? false}
             onClick={() => roleButtonHandler('Mentee')}
           >
             Mentee
           </RoleButton>
         </RoleWrapper>
-        <MentorInfoWrapper $isActive={activeRoles.includes('Mentor')}>
+        <MentorInfoWrapper
+          $isActive={userData.role?.includes('Mentor') ?? false}
+        >
           <Title>Mentor Profile</Title>
           <SubTitle>Profession</SubTitle>
           <CardWrapper>
-            <Card>Web Development</Card>
+            {userData.mentorProfession?.map((prof, i) => {
+              return <Card key={i}>{prof}</Card>;
+            })}
           </CardWrapper>
           <SubTitle>I can help you with...</SubTitle>
           <CardWrapper>
-            <Card>React</Card>
+            {userData.mentorCanHelpWith?.map((help, i) => {
+              return <Card key={i}>{help}</Card>;
+            })}
           </CardWrapper>
         </MentorInfoWrapper>
       </Form>

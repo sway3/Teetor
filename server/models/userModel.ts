@@ -4,7 +4,7 @@ export interface IUser extends Document {
   userName: string;
   firstName: string;
   lastName: string;
-  role: string;
+  role: string[];
   birthday: string;
   profileImg: string;
   description: string;
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
   userName: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  role: { type: String, required: true },
+  role: { type: [String], required: true },
   birthday: { type: String, required: true },
   profileImg: { type: String, required: true },
   description: { type: String, required: true },
