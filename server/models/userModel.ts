@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 
 export interface IUser extends Document {
   userName: string;
+  oAuthIdentifier: string;
   firstName: string;
   lastName: string;
   role: string[];
@@ -26,22 +27,23 @@ export interface IUser extends Document {
 
 const userSchema = new mongoose.Schema({
   userName: { type: String, required: true },
+  oAuthIdentifier: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   role: { type: [String], required: true },
   birthday: { type: String, required: true },
-  profileImg: { type: String, required: true },
+  profileImg: { type: String, required: false },
   description: { type: String, required: true },
   email: { type: String, required: true },
   mentorProfession: { type: [String], required: false },
   mentorCanHelpWith: { type: [String], required: false },
   mentorDescription: { type: String, required: false },
   qualification: {
-    university: { type: String, required: true },
+    university: { type: String, required: false },
   },
   links: {
-    Github: { type: String, required: true },
-    LinkedIn: { type: String, required: true },
+    Github: { type: String, required: false },
+    LinkedIn: { type: String, required: false },
   },
   connections: { type: [String], required: true },
   mentoringArchive: { type: [String], required: true },

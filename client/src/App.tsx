@@ -11,6 +11,9 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import MentorInfoPage from './pages/MentorInfoPage/MentorInfoPage';
 import MessagesPage from './pages/MessagesPage/MessagesPage';
 import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
+import LandingPage from './pages/LandingPage/LandingPage';
+import LoginLoadingPage from './pages/LoginLoadingPage/LoginLoadingPage';
+import SignUpPage from './pages/SignUpPage/SignUpPage';
 
 interface ServerResponse {
   message: string;
@@ -36,11 +39,11 @@ const App: React.FC = () => {
           <Routes>
             <Route
               path='/'
-              element={<h1>Home Page</h1>}
+              element={<LandingPage />}
             />
             <Route
-              path='/dashboard'
-              element={<DashboardPage />}
+              path='/google/callback'
+              element={<LoginLoadingPage />}
             />
             <Route
               path='/match'
@@ -65,6 +68,10 @@ const App: React.FC = () => {
             <Route
               path='/edit'
               element={<EditProfilePage />}
+            />
+            <Route
+              path='/signup'
+              element={<SignUpPage />}
             />
           </Routes>
         </Router>

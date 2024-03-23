@@ -4,9 +4,24 @@ import {
   getNotification,
   getMentoringSessions,
 } from '../utils/functions';
+import { decrypt } from '../utils/authFunctions';
+import jwt from 'jsonwebtoken';
 
 export const getDashInfoController = async (req: Request, res: Response) => {
-  const userId = req.params.id;
+  const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+
+  if (!ACCESS_TOKEN_SECRET) {
+    throw new Error('error');
+  }
+
+  const accessToken = req.cookies.accessToken;
+  const decryptedToken = decrypt(accessToken);
+
+  const decodedToken = jwt.verify(decryptedToken, ACCESS_TOKEN_SECRET) as {
+    userId: string;
+  };
+
+  const userId = decodedToken.userId;
 
   try {
     const [userInfo, notification, mentoringSessions] = await Promise.all([

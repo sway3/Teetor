@@ -1,4 +1,13 @@
 import React, { useEffect, useState } from 'react';
+
+// requests
+import { useMutation } from '@tanstack/react-query';
+import axiosInstance from '../../../utils/axiosInterceptor/axiosInterceptor';
+
+// navigate
+import { useNavigate } from 'react-router-dom';
+
+// styled components
 import {
   Form,
   FormContainer,
@@ -16,8 +25,10 @@ import {
   CardWrapper,
   Card,
 } from './style';
+
+// components
 import AvailableDay from '../AvailableDay/AvailableDay';
-import Toggle from '../../UI/Toggle/Toggle';
+import SkillSearch from '../SkillSearch/SkillSearch';
 
 interface UserInfoFormProps {
   userInfo: any;
@@ -28,9 +39,15 @@ interface UserData {
   lastName?: string;
   userName?: string;
   email?: string;
+  oAuthIdentifier: string;
   birthday?: string;
   description?: string;
+  profileImg?: string;
   role?: string[];
+  qualification: string[];
+  links: any;
+  connections: string[];
+  mentoringArchive: string[];
   availableDays?: string[];
   mentorProfession?: string[];
   mentorCanHelpWith?: string[];
@@ -42,16 +59,36 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
     firstName: '',
     lastName: '',
     userName: '',
-    email: '',
     birthday: '',
-    description: '',
+    email: '',
+    oAuthIdentifier: '',
     role: [],
+    description: '',
+    profileImg: '',
+    qualification: [],
+    links: {},
+    connections: [],
+    mentoringArchive: [],
     availableDays: [],
   });
 
   useEffect(() => {
     setUserData(userInfo);
-  }, []);
+  }, [userInfo]);
+
+  const navigate = useNavigate();
+
+  const submitUserInfo = useMutation({
+    mutationFn: (userInfo: UserData) => {
+      return axiosInstance.post('/signup', userInfo);
+    },
+    onSuccess: () => {
+      navigate('/');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const formChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -79,7 +116,44 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
     });
   };
 
-  const roleButtonHandler = (role: string): void => {
+  const searchProfHandler = (e: React.MouseEvent<HTMLElement>) => {
+    const targetProf = e.currentTarget.innerHTML;
+
+    setUserData((prev) => {
+      const prevProf = prev.mentorProfession ?? [];
+      const newProf = prevProf?.includes(targetProf)
+        ? prevProf
+        : [...prevProf, targetProf];
+
+      return {
+        ...prev,
+        mentorProfession: newProf,
+      };
+    });
+  };
+
+  const searchCanHelpHandler = (e: React.MouseEvent<HTMLElement>) => {
+    const targetCanHelp = e.currentTarget.innerHTML;
+
+    setUserData((prev) => {
+      const prevHelp = prev.mentorCanHelpWith ?? [];
+      const newHelp = prevHelp?.includes(targetCanHelp)
+        ? prevHelp
+        : [...prevHelp, targetCanHelp];
+
+      return {
+        ...prev,
+        mentorCanHelpWith: newHelp,
+      };
+    });
+  };
+
+  const roleButtonHandler = (
+    event: React.MouseEvent<HTMLElement>,
+    role: string
+  ): void => {
+    event.preventDefault();
+
     if (role === 'Mentor') {
       if (userData.role?.includes('Mentor')) {
         setUserData((prev) => {
@@ -129,6 +203,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
 
   const formSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
+
+    submitUserInfo.mutate(userData);
   };
 
   return (
@@ -216,13 +292,13 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
         <RoleWrapper>
           <RoleButton
             $isActive={userData.role?.includes('Mentor') ?? false}
-            onClick={() => roleButtonHandler('Mentor')}
+            onClick={(event) => roleButtonHandler(event, 'Mentor')}
           >
             Mentor
           </RoleButton>
           <RoleButton
             $isActive={userData.role?.includes('Mentee') ?? false}
-            onClick={() => roleButtonHandler('Mentee')}
+            onClick={(event) => roleButtonHandler(event, 'Mentee')}
           >
             Mentee
           </RoleButton>
@@ -232,18 +308,27 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
         >
           <Title>Mentor Profile</Title>
           <SubTitle>Profession</SubTitle>
+          <SkillSearch
+            option='profession'
+            onResultChange={searchProfHandler}
+          />
           <CardWrapper>
             {userData.mentorProfession?.map((prof, i) => {
               return <Card key={i}>{prof}</Card>;
             })}
           </CardWrapper>
           <SubTitle>I can help you with...</SubTitle>
+          <SkillSearch
+            option='canHelpWith'
+            onResultChange={searchCanHelpHandler}
+          />
           <CardWrapper>
             {userData.mentorCanHelpWith?.map((help, i) => {
               return <Card key={i}>{help}</Card>;
             })}
           </CardWrapper>
         </MentorInfoWrapper>
+        <button type='submit'>submit</button>
       </Form>
     </FormContainer>
   );

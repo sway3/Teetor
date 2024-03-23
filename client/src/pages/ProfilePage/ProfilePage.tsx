@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { getUser } from '../../apis/userAPIs';
-
-import { DUMMY_USER_ID } from '../../config/config';
+import { getUser, userLogout } from '../../apis/userAPIs';
 
 import NavBar from '../../components/NavBar/NavBar';
 import {
@@ -18,14 +16,22 @@ import {
 import AvailableDay from '../../components/common/AvailableDay/AvailableDay';
 import UserInfo from '../../components/common/UserInfo/UserInfo';
 import RoleInfo from '../../components/common/RoleInfo/RoleInfo';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage: React.FC = () => {
-  const id: string = DUMMY_USER_ID;
-
   const { data, isPending, error } = useQuery({
-    queryKey: ['getUserInfo', id],
-    queryFn: () => getUser(id),
+    queryKey: ['getUserInfo'],
+    queryFn: getUser,
   });
+
+  const navigate = useNavigate();
+
+  const logoutHandler = async () => {
+    const response = await userLogout();
+    if (response.status === 200) {
+      navigate('/');
+    }
+  };
 
   let content: React.ReactNode = null;
 
@@ -61,6 +67,7 @@ const ProfilePage: React.FC = () => {
       <ProfilePageContent>
         <PersonalInfoWrapper>
           <UserInfo user={userInfo} />
+          <button onClick={logoutHandler}>logout</button>
           <SNSInfoWrapper>
             <SNSInfo />
             <SNSInfo />

@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 
-const useCloseNotification = (ref: React.RefObject<HTMLDivElement>, callback: () => void) => {
+const useCloseNotification = (
+  ref: React.RefObject<HTMLDivElement>,
+  callback: () => void
+) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -14,6 +17,6 @@ const useCloseNotification = (ref: React.RefObject<HTMLDivElement>, callback: ()
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [ref, callback]);
-}
+};
 
 export default useCloseNotification;

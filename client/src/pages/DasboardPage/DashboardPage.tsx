@@ -22,10 +22,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getDashInfo } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
 
-import { DUMMY_USER_ID } from '../../config/config';
-
-const userID = DUMMY_USER_ID;
-
 const DashboardPage: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
 
@@ -33,13 +29,9 @@ const DashboardPage: React.FC = () => {
     setIsChatOpen(!isChatOpen);
   };
 
-  const id: string = userID;
-
-  localStorage.setItem('userID', id);
-
   const { data, isPending, error } = useQuery<AxiosResponse>({
-    queryKey: ['user', id],
-    queryFn: () => getDashInfo(id),
+    queryKey: ['user'],
+    queryFn: getDashInfo,
   });
 
   let content: ReactNode = null;

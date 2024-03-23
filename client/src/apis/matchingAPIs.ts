@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import axiosInstance from '../utils/axiosInterceptor/axiosInterceptor';
 
-export const getDashInfo = async (id: string): Promise<AxiosResponse> => {
-  const response = await axiosInstance.get(`/dashboard/${id}`);
+export const getDashInfo = async (): Promise<AxiosResponse> => {
+  const response = await axiosInstance.get(`/dashboard`);
   return response;
 };
 

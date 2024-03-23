@@ -25,7 +25,8 @@ const EditProfilePage: React.FC = () => {
   }
 
   if (data) {
-    content = <UserInfoForm userInfo={data?.data} />;
+    const userInfo = data?.data;
+    content = <UserInfoForm userInfo={userInfo} />;
   }
 
   return (
