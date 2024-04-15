@@ -32,6 +32,7 @@ import SkillSearch from '../SkillSearch/SkillSearch';
 
 interface UserInfoFormProps {
   userInfo: any;
+  mode: string;
 }
 
 interface UserData {
@@ -54,7 +55,7 @@ interface UserData {
   mentorDescription?: string;
 }
 
-const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
+const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
   const [userData, setUserData] = useState<UserData>({
     firstName: '',
     lastName: '',
@@ -80,7 +81,11 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo }) => {
 
   const submitUserInfo = useMutation({
     mutationFn: (userInfo: UserData) => {
-      return axiosInstance.post('/signup', userInfo);
+      if (mode === 'signup') {
+        return axiosInstance.post('/signup', userInfo);
+      } else {
+        return axiosInstance.put('/user/edit', userInfo);
+      }
     },
     onSuccess: () => {
       navigate('/');

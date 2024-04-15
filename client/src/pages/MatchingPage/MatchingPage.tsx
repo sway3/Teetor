@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // react-query
 import { useQuery } from '@tanstack/react-query';
@@ -10,23 +10,57 @@ import { getMentors, sendMentoringRequest } from '../../apis/matchingAPIs';
 import NavBar from '../../components/NavBar/NavBar';
 import MentorCard from '../../components/UI/MentorCard/MentorCard';
 import { MatchingPageWrapper, GridWrapper } from './style';
-
-import { DUMMY_USER_ID } from '../../config/config';
-
-const userID = DUMMY_USER_ID;
+import NeedHelpWith from '../../components/common/NeedHelpWith/NeedHelpWith';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext, AuthContextProvider } from '../../context/AuthContext';
+import { SocketContextProvider } from '../../context/SocketContext';
 
 const MatchingPage: React.FC = () => {
-  const id: string = userID;
+  const navigate = useNavigate();
+  const [needHelpWith, setNeedHelpWith] = useState<string[]>([]);
+  const [description, setDescription] = useState<string>('');
 
-  const { data, isPending, error } = useQuery({
-    queryKey: ['getMentors', id],
-    queryFn: () => getMentors(id),
+  const searchNeedHelpHandler = (e: React.MouseEvent<HTMLElement>) => {
+    const targetNeedHelp = e.currentTarget.innerHTML;
+
+    setNeedHelpWith((prev) => {
+      const prevHelp = prev;
+      const newHelp = prevHelp.includes(targetNeedHelp)
+        ? prevHelp
+        : [...prevHelp, targetNeedHelp];
+
+      return newHelp;
+    });
+  };
+
+  const descriptionChangeHandler = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setDescription(e.currentTarget.value);
+  };
+
+  const onFindMentors = () => {
+    refetch();
+  };
+
+  const { data, isPending, error, refetch } = useQuery({
+    queryKey: ['getMentors', needHelpWith, description],
+    queryFn: () => getMentors(needHelpWith, description),
+    enabled: false,
   });
 
   let content: React.ReactNode = null;
 
   if (isPending) {
-    content = <div>Loading...</div>;
+    content = (
+      <NeedHelpWith
+        needHelp={needHelpWith}
+        onResultChange={searchNeedHelpHandler}
+        onFindMentors={onFindMentors}
+        description={description}
+        onDescriptionChange={descriptionChangeHandler}
+      />
+    );
   }
 
   if (error) {
@@ -35,24 +69,18 @@ const MatchingPage: React.FC = () => {
 
   if (data) {
     const mentors = data.data;
-    content = mentors.map((mentor: any) => {
-      return (
-        <MentorCard key={mentor._id}>
-          <p>{mentor.userName}</p>
-          <button onClick={() => sendMentoringRequest(userID, mentor._id)}>
-            Mentoring request
-          </button>
-        </MentorCard>
-      );
+    navigate('/match-result', {
+      state: {
+        mentors: mentors,
+        menteeInfo: { description: description, needHelpWith: needHelpWith },
+      },
     });
   }
 
   return (
     <>
       <NavBar />
-      <MatchingPageWrapper>
-        <GridWrapper>{content}</GridWrapper>
-      </MatchingPageWrapper>
+      <MatchingPageWrapper>{content}</MatchingPageWrapper>
     </>
   );
 };

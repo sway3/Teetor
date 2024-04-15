@@ -22,11 +22,9 @@ const Notification: React.FC<NotificationProps> = ({ isOpen, onClose }) => {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   useCloseNotification(wrapperRef, onClose);
 
-  const userID = localStorage.getItem('userID') || '';
-
   const { data, isPending, error } = useQuery({
     queryKey: ['getNotifications'],
-    queryFn: () => getNotifications(userID),
+    queryFn: () => getNotifications(),
     enabled: isOpen,
   });
 
@@ -60,7 +58,10 @@ const Notification: React.FC<NotificationProps> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <NotificationWrapper ref={wrapperRef} className={isOpen ? 'open' : ''}>
+    <NotificationWrapper
+      ref={wrapperRef}
+      className={isOpen ? 'open' : ''}
+    >
       <NotificationTitle>Notifications</NotificationTitle>
       <div>{content}</div>
     </NotificationWrapper>

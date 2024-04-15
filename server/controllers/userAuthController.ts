@@ -2,10 +2,15 @@ import { Request, Response } from 'express';
 
 import jwt from 'jsonwebtoken';
 
-import { decrypt, generateAccessToken } from '../utils/authFunctions';
+import {
+  addAccessTokenCookie,
+  decrypt,
+  generateAccessToken,
+} from '../utils/authFunctions';
 import { getUserInfo } from '../utils/functions';
 
 import RefreshToken from '../models/refreshTokenModel';
+import { access } from 'fs';
 
 require('dotenv').config();
 
@@ -24,33 +29,34 @@ export const refreshTokenController = async (req: Request, res: Response) => {
       const decodedToken = jwt.verify(decryptToken, REFRESH_TOKEN_SECRET) as {
         userId: string;
       };
+      console.log(decodedToken);
       const userId = decodedToken.userId;
 
       try {
-        const refreshToken = await RefreshToken.findOne({
-          token: decodedToken,
+        const targetRefreshToken = await RefreshToken.findOne({
+          token: refreshToken,
           userId: decodedToken.userId,
         });
 
         if (refreshToken) {
           const accessToken = generateAccessToken(userId);
 
-          res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge: 30 * 60 * 1000,
-          });
+          if (accessToken) {
+            addAccessTokenCookie(res, accessToken);
+          }
 
-          res.status(200).send('User login successful');
+          const user = { userId: userId };
+          res.status(200).json(user);
         } else {
           return false;
         }
       } catch (error) {
-        console.log(error);
+        console.log('hiiiii', error);
         return false;
       }
     }
+  } else {
+    res.status(401).send('No refresh token');
   }
 };
 
@@ -62,8 +68,9 @@ export const authController = async (req: Request, res: Response) => {
     throw new Error('error');
   }
 
-  if (req.cookies.accessToken) {
-    // access Token validation
+  const accessToken = req.cookies.accessToken;
+
+  if (accessToken) {
     const accessToken = req.cookies.accessToken;
     const decrypt_token = decrypt(accessToken);
 
@@ -76,8 +83,10 @@ export const authController = async (req: Request, res: Response) => {
         try {
           const user = await getUserInfo(userId);
 
+          const userInfo = { userId: userId };
+
           if (user) {
-            res.status(200).json('login successful');
+            res.status(200).json(userInfo);
           } else {
             res.status(404).json('user not found');
           }
@@ -86,17 +95,12 @@ export const authController = async (req: Request, res: Response) => {
           res.status(500).json('server error');
         }
       } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-          res.set('WWW-Authenticate', 'Bearer error="expired_token"');
-          res.status(401).send('Unauthorised');
-        } else if (error instanceof jwt.JsonWebTokenError) {
-          res.set('WWW-Authenticate', 'Bearer error="invalid_token"');
-          res.status(401).send('Unauthorised');
-        }
+        res.status(500).send('Internal server error');
       }
     }
   } else {
-    res.set('WWW-Authenticate', 'Bearer error="no token"');
-    res.status(401).send('token_not_found');
+    res.set('WWW-Authenticate', 'Bearer error="invalid_token"');
+    res.header('Access-Control-Expose-Headers', 'WWW-Authenticate');
+    res.status(401).send('Unauthorised: no token');
   }
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUser, userLogout } from '../../apis/userAPIs';
 
 import NavBar from '../../components/NavBar/NavBar';
@@ -17,19 +17,21 @@ import AvailableDay from '../../components/common/AvailableDay/AvailableDay';
 import UserInfo from '../../components/common/UserInfo/UserInfo';
 import RoleInfo from '../../components/common/RoleInfo/RoleInfo';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 const ProfilePage: React.FC = () => {
+  const { isAuthed, isPending: pending } = useAuth();
+
   const { data, isPending, error } = useQuery({
     queryKey: ['getUserInfo'],
     queryFn: getUser,
+    enabled: !!isAuthed,
   });
-
-  const navigate = useNavigate();
 
   const logoutHandler = async () => {
     const response = await userLogout();
     if (response.status === 200) {
-      navigate('/');
+      window.location.reload();
     }
   };
 
@@ -84,8 +86,12 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <NavBar />
-      <ProfilePageWrapper>{content}</ProfilePageWrapper>
+      {isAuthed && (
+        <>
+          <NavBar />
+          <ProfilePageWrapper>{content}</ProfilePageWrapper>
+        </>
+      )}
     </>
   );
 };

@@ -1,17 +1,14 @@
 import React from 'react';
 
 import NavBar from '../../components/NavBar/NavBar';
-import { DUMMY_USER_ID } from '../../config/config';
 import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../apis/userAPIs';
 import UserInfoForm from '../../components/common/UserInfoForm/UserInfoForm';
 
 const EditProfilePage: React.FC = () => {
-  const id = DUMMY_USER_ID;
-
   const { data, isPending, error } = useQuery({
-    queryKey: ['getUserInfo', id],
-    queryFn: () => getUser(id),
+    queryKey: ['getUserInfo'],
+    queryFn: () => getUser(),
   });
 
   let content: React.ReactNode = null;
@@ -26,7 +23,12 @@ const EditProfilePage: React.FC = () => {
 
   if (data) {
     const userInfo = data?.data;
-    content = <UserInfoForm userInfo={userInfo} />;
+    content = (
+      <UserInfoForm
+        userInfo={userInfo}
+        mode='edit'
+      />
+    );
   }
 
   return (

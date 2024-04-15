@@ -14,49 +14,39 @@ import {
   ChatInput,
   ChatContent,
   ChatMessage,
+  Chat,
 } from './style';
 
-import Toggle from '../UI/Toggle/Toggle';
-import { getMessageList } from '../../apis/userAPIs';
+import { getChats, getMessageList } from '../../apis/userAPIs';
+import MessageInput from './MessageInput';
+import MessageContent from './MessageContent';
 
-const socket = io('http://localhost:3001');
-
-const DUMMY_USER1 = '65b16cd285aee463b6aa49fe';
-const DUMMY_USER2 = '65ba988085aee463b6aa4a07';
-
-const CURRENT_USER = DUMMY_USER2;
-const TARGET_USER = DUMMY_USER1;
-
-interface Message {
-  senderId: string;
-  recipientId: string;
-  content: string;
-  timestamp: Date;
+interface Chat {
+  _id: string;
+  participants: string[];
+  latestContent: string;
+  timestamp: string;
 }
 
 const Messages: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-
-  useEffect(() => {
-    socket.on('initial_messages', (messages: Message[]) => {
-      setMessages(messages);
-    });
-
-    socket.on('new_message', (message: Message) => {
-      setMessages([...messages, message]);
-    });
-
-    return () => {
-      socket.off('initial_messages');
-      socket.off('new_message');
-    };
-  }, [messages]);
+  const [targetChat, setTargetChat] = useState<Chat>({
+    _id: '',
+    participants: [],
+    latestContent: '',
+    timestamp: '',
+  });
 
   const { data, isPending, error } = useQuery<AxiosResponse>({
-    queryKey: ['message-list', CURRENT_USER],
-    queryFn: () => getMessageList(CURRENT_USER),
+    queryKey: ['chats'],
+    queryFn: () => getChats(),
   });
+
+  useEffect(() => {
+    if (data) {
+      const chats = data.data;
+      if (chats) setTargetChat(chats[0]);
+    }
+  }, [data]);
 
   let content: ReactNode = null;
 
@@ -68,21 +58,24 @@ const Messages: React.FC = () => {
     content = <div>Error: {error.message}</div>;
   }
 
-  const sendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!input.trim()) {
-      return;
-    }
-
-    socket.emit('send_message', {
-      content: input,
-      senderId: CURRENT_USER,
-      recipientId: TARGET_USER,
-    });
-
-    setInput('');
-  };
+  if (data && targetChat) {
+    const chats = data.data;
+    content = (
+      <>
+        {chats.map((chat: Chat, index: number) => {
+          return (
+            <Chat
+              key={index}
+              onClick={() => setTargetChat(chat)}
+              $isActive={targetChat._id === chat._id}
+            >
+              {chat._id}
+            </Chat>
+          );
+        })}
+      </>
+    );
+  }
 
   return (
     <>
@@ -90,30 +83,12 @@ const Messages: React.FC = () => {
         <ThreadContainer>
           <ThreadNavigator>
             <Title>Messages</Title>
-            <Toggle
-              options={['Mentoring', 'General']}
-              isDuplicate={false}
-            />
+            {content}
           </ThreadNavigator>
         </ThreadContainer>
         <ChatContainer>
-          <ChatContent>
-            {messages.map((message, index) => (
-              <ChatMessage key={index}>
-                <p>
-                  {message.senderId}: {message.content}
-                </p>
-              </ChatMessage>
-            ))}
-          </ChatContent>
-          <form onSubmit={sendMessage}>
-            <ChatInput
-              type='text'
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-            />
-            <button type='submit'>Send</button>
-          </form>
+          <MessageContent chat={targetChat} />
+          <MessageInput chat={targetChat} />
         </ChatContainer>
       </Container>
     </>

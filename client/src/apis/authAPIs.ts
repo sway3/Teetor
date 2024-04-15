@@ -6,12 +6,7 @@ export const checkUserAuth = async (): Promise<AxiosResponse> => {
   return response;
 };
 
-export const refreshAccessToken = async (): Promise<boolean> => {
-  try {
-    await axiosInstance.post('/refresh-token');
-    return true;
-  } catch (refreshError) {
-    console.log(refreshError);
-    return false;
-  }
+export const refreshAccessToken = async (): Promise<AxiosResponse> => {
+  const response = await axiosInstance.post('/refresh-token');
+  return response;
 };

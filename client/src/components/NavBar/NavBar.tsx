@@ -28,7 +28,9 @@ const NavBar: React.FC = () => {
     <>
       <NavBarWrapper>
         <NavBarInnerWrapper>
-          <NavBarTitle>teetor</NavBarTitle>
+          <NavBarTitle>
+            <Link to='/'>teetor</Link>
+          </NavBarTitle>
           <NavList>
             <NavItem>
               <Link to='/dashboard'>Dashboard</Link>

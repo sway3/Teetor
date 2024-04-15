@@ -1,3 +1,4 @@
+import { DateCalendar } from '@mui/x-date-pickers';
 import styled from 'styled-components';
 
 export const DashboardWrapper = styled.div`
@@ -35,12 +36,19 @@ export const MentoringThreadWrapper = styled.div`
   height: 30rem;
 `;
 
-export const MentoringThreadCard = styled.div`
+interface MentoringThreadCardProps {
+  $isActive: boolean;
+}
+
+export const MentoringThreadCard = styled.div<MentoringThreadCardProps>`
   width: 100%;
   height: 3rem;
   line-height: 3rem;
   text-align: center;
   justify-content: center;
+
+  background-color: ${(props) => (props.$isActive ? '#14452F' : 'fff')};
+  color: ${(props) => (props.$isActive ? '#fff' : '#000')};
 `;
 
 export const DashboardMain = styled.div`

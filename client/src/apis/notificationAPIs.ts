@@ -1,7 +1,7 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import axiosInstance from '../utils/axiosInterceptor/axiosInterceptor';
 
-export const getNotifications = async (id: string): Promise<AxiosResponse> => {
-  const response = await axiosInstance.get(`users/${id}/notifications`);
+export const getNotifications = async (): Promise<AxiosResponse> => {
+  const response = await axiosInstance.get(`user/notifications`);
   return response;
 };

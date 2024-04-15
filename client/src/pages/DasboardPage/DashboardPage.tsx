@@ -1,5 +1,6 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import dayjs from 'dayjs';
 
 import NavBar from '../../components/NavBar/NavBar';
 import {
@@ -21,18 +22,36 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getDashInfo } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
+import { DateCalendar } from '@mui/x-date-pickers';
+import useAuth from '../../hooks/useAuth';
 
 const DashboardPage: React.FC = () => {
+  const isAuthed = useAuth();
+  const [activeThread, setActiveThread] = useState<any>(null);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
 
   const handleChatButtonClick = () => {
     setIsChatOpen(!isChatOpen);
   };
 
-  const { data, isPending, error } = useQuery<AxiosResponse>({
+  const threadClickHandler = (thread: any) => {
+    setActiveThread(thread);
+  };
+
+  const { data, isPending, error, refetch } = useQuery<AxiosResponse>({
     queryKey: ['user'],
     queryFn: getDashInfo,
+    enabled: true,
   });
+
+  useEffect(() => {
+    if (data) {
+      const mentoringSessions = data?.data.mentoringSessions;
+      if (mentoringSessions.length > 0 && !activeThread) {
+        setActiveThread(mentoringSessions[0]);
+      }
+    }
+  }, [data, activeThread]);
 
   let content: ReactNode = null;
 
@@ -41,7 +60,7 @@ const DashboardPage: React.FC = () => {
   }
 
   if (error) {
-    content = <div>Error: {error.message}</div>;
+    location.reload();
   }
 
   if (data) {
@@ -61,9 +80,14 @@ const DashboardPage: React.FC = () => {
 
     if (data.data.mentoringSessions.length > 0) {
       content = data.data.mentoringSessions.map((mentoring: any) => {
+        const isActive = mentoring._id === activeThread?._id;
         return (
-          <MentoringThreadCard key={mentoring._id}>
-            {mentoring.startDate}
+          <MentoringThreadCard
+            key={mentoring._id}
+            $isActive={isActive}
+            onClick={() => threadClickHandler(mentoring)}
+          >
+            {mentoring.title}
           </MentoringThreadCard>
         );
       });
@@ -82,7 +106,9 @@ const DashboardPage: React.FC = () => {
           </DashboardBrowser>
           <DashboardMain>
             <DashboardMainFirst>
-              <DashboardGoal />
+              <DashboardGoal>
+                <DateCalendar defaultValue={dayjs('2022-04-17')} />
+              </DashboardGoal>
             </DashboardMainFirst>
             <DashboardMainSecond>
               <DashboardCalendar />

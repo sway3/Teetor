@@ -6,6 +6,8 @@ import { hasDuplicates } from '../utils/userUtility';
 import mongoose from 'mongoose';
 import { getUserInfo } from '../utils/functions';
 import {
+  addAccessTokenCookie,
+  addRefreshTokenCookie,
   generateAccessToken,
   generateRefreshToken,
   getUserId,
@@ -22,45 +24,41 @@ export const getUserInfoController = async (req: Request, res: Response) => {
 };
 
 export const getMentorsController = async (req: Request, res: Response) => {
-  const userId = req.params.id;
+  const accessToken = req.cookies.accessToken;
+  const userId = getUserId(accessToken);
+  const menteeInfo = req.body;
+
+  console.log('info', menteeInfo);
 
   try {
     const user = await User.findById(userId);
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const mentors = await User.find({ role: 'mentor' });
+    const mentors = await User.find({
+      role: { $in: ['Mentor'] },
+      _id: { $ne: userId },
+    });
 
     console.log(mentors);
 
-    const activeSessions = await MentoringInfo.find({
-      'participants.menteeId': userId,
-    });
-    const activeMentors = activeSessions.map(
-      (session) => session.participants.mentorId
-    );
-
     const filteredMentors = mentors.filter((mentor) => {
-      if (activeMentors.includes(mentor._id.toString())) {
-        return false;
-      }
-
       let mentorCanHelpWith = mentor.mentorCanHelpWith;
+      const menteeNeedHelpWith = menteeInfo.needHelpWith;
 
       console.log('mentorCanHelpWith: ', mentorCanHelpWith);
 
       const mentorAvailableDays = mentor.availableDays;
       const menteeAvailableDays = user.availableDays;
 
-      // if (
-      //   hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith) &&
-      //   hasDuplicates(mentorAvailableDays, menteeAvailableDays)
-      // ) {
-      //   return true;
-      // }
-
-      return false;
+      if (
+        hasDuplicates(mentorAvailableDays, menteeAvailableDays) &&
+        hasDuplicates(menteeNeedHelpWith, mentorCanHelpWith)
+      ) {
+        return true;
+      }
     });
 
     res.status(200).json(filteredMentors);
@@ -93,19 +91,10 @@ export const userSignUpController = async (req: Request, res: Response) => {
     const accessToken = generateAccessToken(newUser.id);
     const refreshToken = generateRefreshToken(newUser.id);
 
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 30 * 24 * 60 * 1000,
-    });
+    if (accessToken && refreshToken) {
+      addAccessTokenCookie(res, accessToken);
+      addRefreshTokenCookie(res, refreshToken);
+    }
 
     if (refreshToken) await saveNewRefreshToken(newUser.id, refreshToken);
 
@@ -130,5 +119,29 @@ export const userLogoutController = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).send('internal server error');
+  }
+};
+
+export const userProfileEditController = async (
+  req: Request,
+  res: Response
+) => {
+  const accessToken = req.cookies.accessToken;
+  const userId = getUserId(accessToken);
+  const updatedData = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+      new: true,
+    });
+
+    if (!updatedData) {
+      return res.status(404).send('User not found');
+    }
+
+    res.status(200).send('User data updated');
+  } catch (error) {
+    console.error('Error updating user: ', error);
+    res.status(500).send('Error occurred while updating the user');
   }
 };

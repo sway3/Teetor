@@ -26,42 +26,16 @@ const LoginLoadingPage: React.FC = () => {
     });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (data) {
       const status = data.data.status;
+      console.log('hi');
       if (status === 'auth_successful') {
         navigate('/');
       } else {
         navigate('/signup', { state: data.data.userInfo });
       }
     }
-  }, [isSuccess, data, navigate]);
-
-  // useEffect(() => {
-  //   const cancelTokenSource = axios.CancelToken.source();
-
-  //   const userInfoReq = async (code: string) => {
-  //     try {
-  //       const response = await axiosInstance.post('/google-oauth', {
-  //         code: code,
-  //       });
-  //       return response;
-  //     } catch (error) {
-  //       if (axios.isCancel(error)) {
-  //         console.log('Request canceled: ', error.message);
-  //       } else {
-  //         console.error('Request failed: ', error);
-  //       }
-  //     }
-  //   };
-
-  //   if (code) {
-  //     userInfoReq(code);
-  //   }
-
-  //   return () => {
-  //     cancelTokenSource.cancel('Component unmounted');
-  //   };
-  // }, []);
+  }, [isSuccess, data]);
 
   return <h1>Loading..</h1>;
 };

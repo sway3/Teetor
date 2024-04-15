@@ -3,7 +3,9 @@ import styled from 'styled-components';
 export const Input = styled.input`
   width: 20rem;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.7rem;
+  border-radius: 1rem;
+  border: 1px solid #c9c9c9;
 `;
 
 export const Dropdown = styled.ul`

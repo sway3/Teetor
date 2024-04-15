@@ -33,7 +33,10 @@ const SignUpPage: React.FC = () => {
 
   return (
     <>
-      <UserInfoForm userInfo={userInfo} />
+      <UserInfoForm
+        userInfo={userInfo}
+        mode='signup'
+      />
     </>
   );
 };

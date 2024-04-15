@@ -6,6 +6,7 @@ export interface INotification extends Document {
   type: string;
   status: string;
   message: string;
+  content: any;
   timestamp: string;
 }
 
@@ -15,6 +16,7 @@ const notificationSchema = new mongoose.Schema({
   type: { type: String, required: true },
   status: { type: String, required: true },
   message: { type: String, required: true },
+  content: { type: Object, required: false },
   timestamp: { type: String, required: true },
 });
 

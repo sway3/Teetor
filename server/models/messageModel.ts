@@ -1,16 +1,20 @@
 import mongoose, { Document } from 'mongoose';
+import Chat from './chatModel';
+import User from './userModel';
 
 interface Imessage extends Document {
-  recipientId: mongoose.Schema.Types.ObjectId;
-  senderId: mongoose.Schema.Types.ObjectId;
+  recipientId: string;
+  senderId: string;
+  chatId: string;
   content: string;
   timestamp: string;
   readStatus: boolean;
 }
 
 const messageSchema = new mongoose.Schema({
-  recipientId: { type: String, required: true},
-  senderId: { type: String, required: true },
+  recipientId: { type: String, required: true, ref: User },
+  senderId: { type: String, required: true, ref: User },
+  chatId: { type: String, required: true, ref: Chat },
   content: { type: String, required: true },
   timestamp: { type: String, required: true },
   readStatus: { type: Boolean, required: true },

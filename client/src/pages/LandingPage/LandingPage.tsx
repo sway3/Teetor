@@ -3,6 +3,8 @@ import { GoogleLoginButton } from './style';
 
 import DashboardPage from '../DasboardPage/DashboardPage';
 import useAuth from '../../hooks/useAuth';
+import { SocketContextProvider } from '../../context/SocketContext';
+import { AuthContextProvider, useAuthContext } from '../../context/AuthContext';
 
 const LandingPage: React.FC = () => {
   const login = async () => {
@@ -18,16 +20,16 @@ const LandingPage: React.FC = () => {
     window.location.href = googleAuthUrl;
   };
 
-  const { isAuthed, isPending } = useAuth();
-
-  if (isPending) {
-    return <div></div>;
-  }
+  const { isAuthed } = useAuth();
 
   return (
     <>
       {isAuthed ? (
-        <DashboardPage />
+        <AuthContextProvider>
+          <SocketContextProvider>
+            <DashboardPage />
+          </SocketContextProvider>
+        </AuthContextProvider>
       ) : (
         <>
           <h1>Welcome to Teetor!</h1>

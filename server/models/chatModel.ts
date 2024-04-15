@@ -1,17 +1,15 @@
 import mongoose, { Document } from 'mongoose';
 
 interface IChat extends Document {
-  senderId: mongoose.Schema.Types.ObjectId;
-  content: string;
+  participants: string[];
+  latestContent: string;
   timestamp: string;
-  readStatus: boolean;
-};
+}
 
 const chatSchema = new mongoose.Schema({
-  senderId: { type: String, required: true },
-  content: { type: String, required: true },
+  participants: { type: [String], ref: 'User', required: true },
+  latestContent: { type: String, required: true },
   timestamp: { type: String, required: true },
-  readStatus: { type: Boolean, required: true },
 });
 
 const Chat = mongoose.model<IChat>('Chats', chatSchema);

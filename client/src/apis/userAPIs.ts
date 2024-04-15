@@ -6,12 +6,17 @@ export const getUser = async (): Promise<AxiosResponse> => {
   return response;
 };
 
-export const getMessageList = async (id: string): Promise<AxiosResponse> => {
-  const response = await axiosInstance.get(`users/${id}/messages/`);
+export const getMessageList = async (): Promise<AxiosResponse> => {
+  const response = await axiosInstance.get(`user/messages/`);
   return response;
 };
 
 export const userLogout = async (): Promise<AxiosResponse> => {
   const response = await axiosInstance.post(`logout`);
+  return response;
+};
+
+export const getChats = async (): Promise<AxiosResponse> => {
+  const response = await axiosInstance.get(`chats`);
   return response;
 };

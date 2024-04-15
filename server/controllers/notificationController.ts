@@ -1,42 +1,31 @@
 import { Request, Response } from 'express';
 
 import Notification from '../models/notificationModel';
-import MentoringInfo from '../models/mentoringSessionModel';
+import MentoringSession from '../models/mentoringSessionModel';
 import User from '../models/userModel';
+import { getUserId } from '../utils/authFunctions';
+import Chat from '../models/chatModel';
+import Message from '../models/messageModel';
 
-export const getNotificationsController = async (req: Request, res: Response) => {
-  const userId = req.params.id;
-  console.log('userId: ', userId)
+export const getNotificationsController = async (
+  req: Request,
+  res: Response
+) => {
+  const accessToken = req.cookies.accessToken;
+  const userId = getUserId(accessToken);
 
   try {
-    const notifications = await Notification.find({ 'recipientId': userId });
+    const notifications = await Notification.find({ recipientId: userId });
     res.status(200).json(notifications);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const mentoringRequestController = async (req: Request, res: Response) => {
-  const { mentorId, menteeId } = req.body;
-
-  try {
-    const notification = new Notification({
-      recipientId: mentorId,
-      senderId: menteeId,
-      type: 'mentoring-request',
-      status: 'pending',
-      message: 'You have a new mentoring request',
-      timestamp: new Date().toISOString()
-    })
-
-    const savedNotification = await notification.save();
-    res.status(201).json(savedNotification);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const getMentoringRequestController = async (req: Request, res: Response) => {
+export const getMentoringRequestController = async (
+  req: Request,
+  res: Response
+) => {
   const notificationRequestId = req.params.id;
 
   try {
@@ -52,31 +41,56 @@ export const getMentoringRequestController = async (req: Request, res: Response)
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const controlMentoringRequestController = async (req: Request, res: Response) => {
+export const controlMentoringRequestController = async (
+  req: Request,
+  res: Response
+) => {
   const notificationId = req.params.id;
-  const { status } = req.body;
-  
+  const { status, title } = req.body;
+
   try {
     const notification = await Notification.findById(notificationId);
+    console.log(notification);
 
     if (!notification) {
       return res.status(404).json({ message: 'Notification not found' });
     }
 
     if (status === 'accepted') {
-      const mentoringSession = new MentoringInfo({
+      const mentorId = notification.recipientId;
+      const mentor = await User.findById(mentorId);
+
+      console.log(notification.content);
+
+      const mentoringSession = new MentoringSession({
         participants: {
           mentorId: notification.recipientId,
-          menteeId: notification.senderId
+          menteeId: notification.senderId,
         },
+        title: title,
         status: 'inProgress',
         startDate: new Date().toISOString(),
-        endDate: null
+        endDate: null,
+        mentorInfo: {
+          canHelpWith: notification.content.mentorCanHelpWith,
+          description: notification.content.mentorDescription,
+        },
+        menteeInfo: {
+          needHelpWith: notification.content.menteeNeedHelpWith,
+          description: notification.content.menteeDescription,
+        },
+        calendar: [],
       });
 
-      const savedMentoringSession = await mentoringSession.save();
+      const newChat = new Chat({
+        participants: [notification.recipientId, notification.senderId],
+        latestContent: 'Welcome!',
+        timestamp: new Date().toISOString(),
+      });
+
+      await Promise.all([newChat.save(), mentoringSession.save()]);
 
       const resultNotification = new Notification({
         recipientId: notification.senderId,
@@ -84,7 +98,7 @@ export const controlMentoringRequestController = async (req: Request, res: Respo
         type: 'mentoring-request-result',
         status: 'accepted',
         message: `Your mentoring request to ${notification.recipientId} has been accepted. Start off your session by chatting to your mentor!`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       const savedResultNotification = await resultNotification.save();
@@ -94,4 +108,4 @@ export const controlMentoringRequestController = async (req: Request, res: Respo
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-}
+};

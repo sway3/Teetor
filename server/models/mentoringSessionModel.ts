@@ -20,6 +20,15 @@ export interface IMentoringSession extends mongoose.Document {
   startDate: string;
   endDate: string;
   status: string;
+  title: string;
+  mentorInfo: {
+    canHelpWith: string[];
+    description: string;
+  };
+  menteeInfo: {
+    needHelpWith: string[];
+    description: string;
+  };
   calendar: ICalendar[];
 }
 
@@ -31,6 +40,15 @@ const mentoringSessionSchema = new mongoose.Schema({
   startDate: { type: String, required: true },
   endDate: { type: String, required: false },
   status: { type: String, required: true },
+  title: { type: String, required: true },
+  mentorInfo: {
+    canHelpWith: { type: [String], required: true },
+    description: { type: String, required: false },
+  },
+  menteeInfo: {
+    needHelpWith: { type: [String], required: true },
+    description: { type: String, required: false },
+  },
   calendar: { type: [calendarSchema], required: false },
 });
 

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-
+import { Response } from 'express';
 import crypto from 'crypto';
 
 require('dotenv').config();
@@ -93,4 +93,22 @@ export const getUserId = (token: string): string => {
   const userId = decodedToken.userId;
 
   return userId;
+};
+
+export const addAccessTokenCookie = (res: Response, token: string) => {
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 30 * 60 * 1000,
+  });
+};
+
+export const addRefreshTokenCookie = (res: Response, token: string) => {
+  res.cookie('refreshToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
 };

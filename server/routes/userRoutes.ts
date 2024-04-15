@@ -4,10 +4,10 @@ import {
   getMentorsController,
   userSignUpController,
   userLogoutController,
+  userProfileEditController,
 } from '../controllers/userController';
 import {
   getNotificationsController,
-  mentoringRequestController,
   getMentoringRequestController,
   controlMentoringRequestController,
 } from '../controllers/notificationController';
@@ -17,15 +17,22 @@ import {
   authController,
   refreshTokenController,
 } from '../controllers/userAuthController';
+import { mentoringRequestController } from '../controllers/mentoringController';
+import {
+  loadChatsController,
+  loadMessageController,
+  sendMessageController,
+} from '../controllers/chatController';
 
 const router = express.Router();
 
 router.get('/dashboard', getDashInfoController);
 router.post('/signup', userSignUpController);
 router.get('/user', getUserInfoController);
+router.put('/user/edit', userProfileEditController);
 router.post('/logout', userLogoutController);
-router.get('/users/:id/mentors', getMentorsController);
-router.get('/users/:id/notifications', getNotificationsController);
+router.post('/user/mentors', getMentorsController);
+router.get('/user/notifications', getNotificationsController);
 router.post('/mentoring-request', mentoringRequestController);
 router.get('/mentoring-request/:id', getMentoringRequestController);
 router.patch('/mentoring-request/:id', controlMentoringRequestController);
@@ -34,5 +41,10 @@ router.patch('/mentoring-request/:id', controlMentoringRequestController);
 router.post('/auth', authController);
 router.post('/google-oauth', googleOAuthController);
 router.post('/refresh-token', refreshTokenController);
+
+//chat
+router.get('/chats', loadChatsController);
+router.get('/messages/:id', loadMessageController);
+router.post('/messages', sendMessageController);
 
 export default router;

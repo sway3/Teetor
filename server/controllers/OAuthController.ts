@@ -4,12 +4,15 @@ import { google } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 
 import {
+  addAccessTokenCookie,
+  addRefreshTokenCookie,
   generateAccessToken,
   generateRefreshToken,
 } from '../utils/authFunctions';
 
 import RefreshToken from '../models/refreshTokenModel';
 import User from '../models/userModel';
+import { access } from 'fs';
 
 require('dotenv').config();
 
@@ -41,10 +44,11 @@ const getGoogleOAuthUserInfo = async (tokens: any): Promise<any> => {
   try {
     const res = await peopleService.people.get({
       resourceName: 'people/me',
-      personFields: 'names,emailAddresses,birthdays',
+      personFields: 'names,emailAddresses',
     });
 
     const data = res.data;
+    console.log(data);
     return data;
   } catch (error) {
     throw new Error(`error: ${error}`);
@@ -68,6 +72,7 @@ const saveNewRefreshToken = async (id: string, token: string) => {
 
     const savedToken = await newRefreshToken.save();
   } catch (error) {
+    console.log('error occurred in saving new refresh token');
     throw new Error(`error: ${error}`);
   }
 };
@@ -78,47 +83,34 @@ export const googleOAuthController = async (req: Request, res: Response) => {
     const tokens = await getGoogleOAuthToken(code);
     const data = await getGoogleOAuthUserInfo(tokens);
 
-    console.log(data.birthdays);
-
     const oAuthIdentifer = data?.resourceName;
 
     const user = await checkOAuthIdentifier(oAuthIdentifer);
 
     console.log(user);
 
-    if (user.length !== 0) {
-      console.log(user._id);
-      const accessToken = generateAccessToken(user._id);
-      const refreshToken = generateRefreshToken(user._id) || '';
+    if (user && user.length !== 0) {
+      try {
+        const accessToken = generateAccessToken(user._id);
+        const refreshToken = generateRefreshToken(user._id);
 
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        maxAge: 0.5 * 60 * 1000,
-      });
+        if (accessToken && refreshToken) {
+          await saveNewRefreshToken(user._id, refreshToken);
 
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+          addAccessTokenCookie(res, accessToken);
+          addRefreshTokenCookie(res, refreshToken);
 
-      await saveNewRefreshToken(user._id, refreshToken);
-
-      res.status(200).json({
-        status: 'auth_successful',
-      });
+          res.status(200).json({
+            status: 'auth_successful',
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       const userInfo = {
         firstName: data.names[0].givenName,
         lastName: data.names[0].familyName,
-        birthday: new Date(
-          data.birthdays[0].date.year,
-          data.birthdays[0].date.month - 1,
-          data.birthdays[0].date.day
-        ).toISOString(),
         email: data.emailAddresses[0].value,
         oAuthIdentifier: data.resourceName,
       };
