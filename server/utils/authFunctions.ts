@@ -66,13 +66,12 @@ export const decrypt = (text: string) => {
       iv
     );
 
-    // For Buffers, you don't need to specify the input encoding, only the output encoding if you're converting the output to a string
     let decrypted = Buffer.concat([
       decipher.update(encryptedText),
       decipher.final(),
     ]);
 
-    return decrypted.toString('utf8'); // Convert the decrypted Buffer back to string
+    return decrypted.toString('utf8');
   } else {
     throw new Error('Encryption key is missing');
   }

@@ -33,10 +33,7 @@ const NavBar: React.FC = () => {
           </NavBarTitle>
           <NavList>
             <NavItem>
-              <Link to='/dashboard'>Dashboard</Link>
-            </NavItem>
-            <NavItem>
-              <Link to='/forum'>Forum</Link>
+              <Link to='/'>Dashboard</Link>
             </NavItem>
             <NavItem>
               <Link to='/messages'>Messages</Link>

@@ -8,7 +8,6 @@ import DashboardPage from './pages/DasboardPage/DashboardPage';
 import MatchingPage from './pages/MatchingPage/MatchingPage';
 import MentoringRequestPage from './pages/MentoringRequest/MentoringRequestPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
-import MentorInfoPage from './pages/MentorInfoPage/MentorInfoPage';
 import MessagesPage from './pages/MessagesPage/MessagesPage';
 import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 import LandingPage from './pages/LandingPage/LandingPage';
@@ -49,10 +48,7 @@ const App: React.FC = () => {
           path='/profile'
           element={<ProfilePage />}
         />
-        <Route
-          path='/mentor-info'
-          element={<MentorInfoPage />}
-        />
+
         <Route
           path='/messages'
           element={<MessagesPage />}

@@ -57,13 +57,15 @@ const ProfilePage: React.FC = () => {
 
     let roleInfo: any = null;
 
-    if (userInfo.role !== 'mentee') {
-      roleInfo = {
-        profession: data?.data.mentorProfession,
-        canHelpWith: data?.data.mentorCanHelpWith,
-        description: data?.data.mentorDescription,
-      };
-    }
+    data?.data.role.forEach((role: any, i: number) => {
+      if (role !== 'mentee') {
+        roleInfo = {
+          profession: data?.data.mentorProfession,
+          canHelpWith: data?.data.mentorCanHelpWith,
+          description: data?.data.mentorDescription,
+        };
+      }
+    });
 
     content = (
       <ProfilePageContent>
@@ -79,7 +81,7 @@ const ProfilePage: React.FC = () => {
             <AvailableDay availableDays={availableDays} />
           </AvailableDayContentWrapper>
         </PersonalInfoWrapper>
-        {data?.data.role !== 'mentee' && <RoleInfo roleInfo={roleInfo} />}
+        {roleInfo && <RoleInfo roleInfo={roleInfo} />}
       </ProfilePageContent>
     );
   }

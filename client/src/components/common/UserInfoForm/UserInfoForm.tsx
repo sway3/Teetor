@@ -24,11 +24,13 @@ import {
   SubTitle,
   CardWrapper,
   Card,
+  FormFlexItem,
 } from './style';
 
 // components
 import AvailableDay from '../AvailableDay/AvailableDay';
 import SkillSearch from '../SkillSearch/SkillSearch';
+import { Button, ButtonWrapper } from '../../EventInfo/style';
 
 interface UserInfoFormProps {
   userInfo: any;
@@ -215,7 +217,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
   return (
     <FormContainer>
       <Form onSubmit={formSubmitHandler}>
-        <div>
+        <FormFlexItem>
+          <Title>Profile</Title>
           <NameWrapper>
             <div>
               <Label>First name</Label>
@@ -267,7 +270,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
             value={userData.description}
             onChange={formChangeHandler}
           />
-        </div>
+        </FormFlexItem>
         <LinksWrapper>
           <Links>
             <SelectLink defaultValue={'default'}>
@@ -289,25 +292,31 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
             />
           </Links>
         </LinksWrapper>
-        <AvailableDay
-          availableDays={userData.availableDays || []}
-          isEditable={true}
-          onUpdateDays={availableDaysHandler}
-        />
-        <RoleWrapper>
-          <RoleButton
-            $isActive={userData.role?.includes('Mentor') ?? false}
-            onClick={(event) => roleButtonHandler(event, 'Mentor')}
-          >
-            Mentor
-          </RoleButton>
-          <RoleButton
-            $isActive={userData.role?.includes('Mentee') ?? false}
-            onClick={(event) => roleButtonHandler(event, 'Mentee')}
-          >
-            Mentee
-          </RoleButton>
-        </RoleWrapper>
+        <FormFlexItem>
+          <Title>Available Days</Title>
+          <AvailableDay
+            availableDays={userData.availableDays || []}
+            isEditable={true}
+            onUpdateDays={availableDaysHandler}
+          />
+        </FormFlexItem>
+        <FormFlexItem>
+          <Title>Role</Title>
+          <RoleWrapper>
+            <RoleButton
+              $isActive={userData.role?.includes('Mentor') ?? false}
+              onClick={(event) => roleButtonHandler(event, 'Mentor')}
+            >
+              Mentor
+            </RoleButton>
+            <RoleButton
+              $isActive={userData.role?.includes('Mentee') ?? false}
+              onClick={(event) => roleButtonHandler(event, 'Mentee')}
+            >
+              Mentee
+            </RoleButton>
+          </RoleWrapper>
+        </FormFlexItem>
         <MentorInfoWrapper
           $isActive={userData.role?.includes('Mentor') ?? false}
         >
@@ -333,7 +342,11 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
             })}
           </CardWrapper>
         </MentorInfoWrapper>
-        <button type='submit'>submit</button>
+        <FormFlexItem>
+          <ButtonWrapper>
+            <Button type='submit'>submit</Button>
+          </ButtonWrapper>
+        </FormFlexItem>
       </Form>
     </FormContainer>
   );

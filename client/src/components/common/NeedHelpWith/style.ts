@@ -29,6 +29,7 @@ export const CardWrapper = styled.div`
 
 export const Card = styled.div`
   display: block;
+  width: fit-content;
   font-size: 1rem;
   font-weight: 500;
   color: #000;

@@ -5,7 +5,6 @@ export const MatchingPageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 2rem 5rem;
-  height: calc(100vh - 4rem);
 `;
 
 export const GridWrapper = styled.div`

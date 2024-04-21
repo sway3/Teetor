@@ -58,23 +58,26 @@ const Messages: React.FC = () => {
     content = <div>Error: {error.message}</div>;
   }
 
-  if (data && targetChat) {
+  if (data) {
     const chats = data.data;
-    content = (
-      <>
-        {chats.map((chat: Chat, index: number) => {
-          return (
-            <Chat
-              key={index}
-              onClick={() => setTargetChat(chat)}
-              $isActive={targetChat._id === chat._id}
-            >
-              {chat._id}
-            </Chat>
-          );
-        })}
-      </>
-    );
+    content =
+      chats.length !== 0 ? (
+        <>
+          {chats.map((chat: Chat, index: number) => {
+            return (
+              <Chat
+                key={index}
+                onClick={() => setTargetChat(chat)}
+                $isActive={targetChat._id === chat._id}
+              >
+                {chat._id}
+              </Chat>
+            );
+          })}
+        </>
+      ) : (
+        <p>Please create a new mentoring session to chat with someone!</p>
+      );
   }
 
   return (
@@ -87,7 +90,7 @@ const Messages: React.FC = () => {
           </ThreadNavigator>
         </ThreadContainer>
         <ChatContainer>
-          <MessageContent chat={targetChat} />
+          {data && targetChat && <MessageContent chat={targetChat} />}
           <MessageInput chat={targetChat} />
         </ChatContainer>
       </Container>

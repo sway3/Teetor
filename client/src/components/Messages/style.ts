@@ -86,3 +86,12 @@ export const MessageBox = styled.div<ChatMessageProps>`
   background-color: ${(props) => (props.$fromMe ? '#14452F' : '#cccccc')};
   color: ${(props) => (props.$fromMe ? '#fff' : '#000')};
 `;
+
+export const Suggestion = styled.div`
+  padding: 0.7rem;
+  border: 1px solid #14452f;
+  border-radius: 1rem;
+  background-color: #f5fcf9;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+`;

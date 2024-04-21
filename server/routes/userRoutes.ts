@@ -17,7 +17,12 @@ import {
   authController,
   refreshTokenController,
 } from '../controllers/userAuthController';
-import { mentoringRequestController } from '../controllers/mentoringController';
+import {
+  addNewEventController,
+  loadEventsController,
+  mentoringRequestController,
+  removeEventController,
+} from '../controllers/mentoringController';
 import {
   loadChatsController,
   loadMessageController,
@@ -46,5 +51,9 @@ router.post('/refresh-token', refreshTokenController);
 router.get('/chats', loadChatsController);
 router.get('/messages/:id', loadMessageController);
 router.post('/messages', sendMessageController);
+
+router.post('/calendar', addNewEventController);
+router.get('/calendar/:id', loadEventsController);
+router.patch('/calendar/:sessionId/event/:eventId', removeEventController);
 
 export default router;

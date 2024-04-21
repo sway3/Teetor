@@ -58,10 +58,10 @@ export const controlMentoringRequestController = async (
       return res.status(404).json({ message: 'Notification not found' });
     }
 
-    if (status === 'accepted') {
-      const mentorId = notification.recipientId;
-      const mentor = await User.findById(mentorId);
+    const mentorId = notification.recipientId;
+    const mentor = await User.findById(mentorId);
 
+    if (status === 'accepted') {
       console.log(notification.content);
 
       const mentoringSession = new MentoringSession({
@@ -97,11 +97,22 @@ export const controlMentoringRequestController = async (
         senderId: notification.recipientId,
         type: 'mentoring-request-result',
         status: 'accepted',
-        message: `Your mentoring request to ${notification.recipientId} has been accepted. Start off your session by chatting to your mentor!`,
+        message: `Your mentoring request to ${mentor?.firstName} has been accepted. Start off your session by chatting to your mentor!`,
         timestamp: new Date().toISOString(),
       });
 
-      const savedResultNotification = await resultNotification.save();
+      resultNotification.save();
+    } else {
+      const resultNotification = new Notification({
+        recipientId: notification.senderId,
+        senderId: notification.recipientId,
+        type: 'mentoring-request-result',
+        status: 'rejected',
+        message: `Your mentoring request to ${mentor?.firstName} has been rejected. Please find another mentor that is available.`,
+        timestamp: new Date().toISOString(),
+      });
+
+      await resultNotification.save();
     }
 
     return res.status(200).json(notification);

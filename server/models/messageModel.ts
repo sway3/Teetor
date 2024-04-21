@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import Chat from './chatModel';
 import User from './userModel';
 
-interface Imessage extends Document {
+export interface Imessage extends Document {
   recipientId: string;
   senderId: string;
   chatId: string;
@@ -17,7 +17,7 @@ const messageSchema = new mongoose.Schema({
   chatId: { type: String, required: true, ref: Chat },
   content: { type: String, required: true },
   timestamp: { type: String, required: true },
-  readStatus: { type: Boolean, required: true },
+  readStatus: { type: Boolean, required: false },
 });
 
 const Message = mongoose.model<Imessage>('Messages', messageSchema);

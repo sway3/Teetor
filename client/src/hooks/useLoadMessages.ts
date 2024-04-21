@@ -30,7 +30,7 @@ const useLoadMessages = (chatId: string) => {
     }
   }, [data]);
 
-  return { messages, setMessages, suggestions, isPending };
+  return { messages, setMessages, suggestions, setSuggestions, isPending };
 };
 
 export default useLoadMessages;

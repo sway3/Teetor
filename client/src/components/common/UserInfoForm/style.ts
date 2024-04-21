@@ -4,6 +4,7 @@ export const FormContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 2rem;
 `;
 
 export const Form = styled.form`
@@ -15,6 +16,10 @@ export const Form = styled.form`
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+`;
+
+export const FormFlexItem = styled.div`
+  width: 30rem;
 `;
 
 export const Label = styled.label`
@@ -61,6 +66,8 @@ export const SelectLink = styled.select`
 
 export const RoleWrapper = styled.div`
   display: flex;
+  justify-content: center;
+  margin: 1rem;
 `;
 
 interface RoleButtonProps {
@@ -76,9 +83,14 @@ export const RoleButton = styled.button<RoleButtonProps>`
   ${(props) =>
     props.$isActive &&
     css`
-      background-color: #007bff;
+      background-color: #14452f;
       color: white;
     `}
+
+  &:hover {
+    color: #fff;
+    background-color: #14452f;
+  }
 `;
 
 interface MentorProps {
@@ -87,10 +99,12 @@ interface MentorProps {
 
 export const MentorInfoWrapper = styled.div<MentorProps>`
   display: ${(props) => (props.$isActive ? 'block' : 'none')};
+  width: 30rem;
 `;
 
 export const Title = styled.h2`
   font-size: 1.5rem;
+  margin: 1rem 0;
 `;
 
 export const SubTitle = styled.h3`
@@ -101,6 +115,7 @@ export const SearchBar = styled.div``;
 
 export const CardWrapper = styled.div`
   display: flex;
+  margin-bottom: 1rem;
 `;
 
 export const Card = styled.div`

@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
-interface IChat extends Document {
+export interface IChat extends Document {
   participants: string[];
   latestContent: string;
   timestamp: string;

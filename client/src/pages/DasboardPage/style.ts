@@ -71,6 +71,7 @@ export const DashboardGoal = styled.div`
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 100%;
+  padding: 1rem;
 `;
 
 export const DashboardMainSecond = styled.div`

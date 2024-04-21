@@ -78,8 +78,9 @@ const saveNewRefreshToken = async (id: string, token: string) => {
 };
 
 export const googleOAuthController = async (req: Request, res: Response) => {
+  console.log(req.body);
+  const code = req.body.code;
   try {
-    const { code } = req.body;
     const tokens = await getGoogleOAuthToken(code);
     const data = await getGoogleOAuthUserInfo(tokens);
 
@@ -122,6 +123,6 @@ export const googleOAuthController = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('OAuth error: ', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).send('Invalid google token');
   }
 };

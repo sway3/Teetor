@@ -5,6 +5,7 @@ import Notification from '../models/notificationModel';
 import MentoringInfo from '../models/mentoringSessionModel';
 
 import { getUserId } from '../utils/authFunctions';
+import MentoringSession from '../models/mentoringSessionModel';
 
 export const getMentoringInfoController = async (
   req: Request,
@@ -53,5 +54,54 @@ export const mentoringRequestController = async (
     res.status(201).json(savedNotification);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const addNewEventController = async (req: Request, res: Response) => {
+  const { sessionId } = req.body;
+  const newEvent = req.body;
+
+  try {
+    await MentoringSession.findByIdAndUpdate(
+      sessionId,
+      {
+        $push: { calendar: newEvent },
+      },
+      { new: true }
+    );
+
+    res.status(201).send('new event successfully added');
+  } catch (error) {
+    console.error('Error occurred in addNewEventController');
+    res.status(500).json('error in addNewEventController');
+  }
+};
+
+export const loadEventsController = async (req: Request, res: Response) => {
+  const sessionId = req.params.id;
+
+  try {
+    const session = await MentoringSession.findById(sessionId);
+    const events = session?.calendar;
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json('Error occurred in loadEventsController');
+    console.error(error);
+  }
+};
+
+export const removeEventController = async (req: Request, res: Response) => {
+  const sessionId = req.params.sessionId;
+  const eventId = req.params.eventId;
+
+  try {
+    await MentoringSession.findByIdAndUpdate(sessionId, {
+      $pull: { calendar: { _id: eventId } },
+    });
+
+    res.status(200).send('remove event successful');
+  } catch (error) {
+    console.error('removeEventController error: ', error);
+    res.status(500).json('error occurred in removeEventController');
   }
 };

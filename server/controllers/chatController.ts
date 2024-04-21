@@ -7,28 +7,12 @@ import { getRecicipientSocketId, io } from '../socket/socket';
 import MentoringSession from '../models/mentoringSessionModel';
 import { chatSuggestController } from './gptController';
 
-// TypeScript interface for message data
-interface IMessageData {
-  recipientId: string;
-  senderId: string;
-  content: string;
-  timestamp: string;
-  readStatus: boolean;
-}
-
-export const saveMessage = async (data: IMessageData): Promise<void> => {
-  try {
-    await Message.create(data);
-  } catch (error) {
-    console.error('Error saving message:', error);
-    throw new Error('Error saving message');
-  }
-};
-
 export const loadMessageController = async (req: Request, res: Response) => {
   const accessToken = req.cookies.accessToken;
   const userId = getUserId(accessToken);
   const chatId = req.params.id;
+
+  console.log(chatId);
 
   try {
     const messages = await Message.find({ chatId: chatId })
@@ -61,6 +45,7 @@ export const loadMessageController = async (req: Request, res: Response) => {
       res.status(200).json({ messages, chatSuggestion });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json('Error occurred in load messages controller');
   }
 };
@@ -96,17 +81,7 @@ export const sendMessageController = async (req: Request, res: Response) => {
 
       io.emit('newMessage', messageFormat);
 
-      // if (recipientSocketId) {
-      //   console.log('hi');
-      //   const messageFormat = await newMessage.populate(
-      //     'senderId',
-      //     'firstName'
-      //   );
-
-      //   io.to(recipientSocketId).emit('newMessage', messageFormat);
-      // }
-
-      res.status(201).json('Message sent successful');
+      res.status(201).send('Message sent successful');
     }
   } catch (error) {
     res.status(500).json(`Error occurred in send message controller: ${error}`);

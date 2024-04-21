@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 import NavBar from '../../components/NavBar/NavBar';
 import {
@@ -22,17 +22,16 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getDashInfo } from '../../apis/matchingAPIs';
 import { Link } from 'react-router-dom';
-import { DateCalendar } from '@mui/x-date-pickers';
 import useAuth from '../../hooks/useAuth';
+import DateTimePicker from '../../components/Calendar/DatePicker';
+import Calendar from '../../components/Calendar/Calendar';
+import EventInfo from '../../components/EventInfo/EventInfo';
+import { EventInfoWrapper } from '../../components/EventInfo/style';
 
 const DashboardPage: React.FC = () => {
   const isAuthed = useAuth();
   const [activeThread, setActiveThread] = useState<any>(null);
-  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
-
-  const handleChatButtonClick = () => {
-    setIsChatOpen(!isChatOpen);
-  };
+  const [pickedDate, setPickedDate] = useState<Dayjs | null>(dayjs(new Date()));
 
   const threadClickHandler = (thread: any) => {
     setActiveThread(thread);
@@ -107,11 +106,25 @@ const DashboardPage: React.FC = () => {
           <DashboardMain>
             <DashboardMainFirst>
               <DashboardGoal>
-                <DateCalendar defaultValue={dayjs('2022-04-17')} />
+                {data && activeThread && (
+                  <Calendar
+                    pickedDate={pickedDate}
+                    setPickedDate={setPickedDate}
+                    sessionId={activeThread?._id}
+                  />
+                )}
               </DashboardGoal>
             </DashboardMainFirst>
             <DashboardMainSecond>
-              <DashboardCalendar />
+              <EventInfoWrapper>
+                {data && activeThread && (
+                  <EventInfo
+                    pickedDate={pickedDate}
+                    setPickedDate={setPickedDate}
+                    sessionId={activeThread?._id}
+                  />
+                )}
+              </EventInfoWrapper>
               <DashboardEtc />
             </DashboardMainSecond>
           </DashboardMain>
