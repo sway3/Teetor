@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChatInput } from './style';
+import { ChatButton, ChatForm, ChatInput } from './style';
 import useSendMessage from '../../hooks/useSendMessage';
 
 interface Chat {
@@ -34,14 +34,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ chat }) => {
   };
 
   return (
-    <form onSubmit={sendMessage}>
+    <ChatForm onSubmit={sendMessage}>
       <ChatInput
         type='text'
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button type='submit'>Send</button>
-    </form>
+      <ChatButton type='submit'>Send</ChatButton>
+    </ChatForm>
   );
 };
 

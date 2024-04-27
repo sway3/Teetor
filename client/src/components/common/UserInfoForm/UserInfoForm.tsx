@@ -20,11 +20,11 @@ import {
   Title,
   LinksWrapper,
   Links,
-  SelectLink,
   SubTitle,
   CardWrapper,
   Card,
   FormFlexItem,
+  Description,
 } from './style';
 
 // components
@@ -218,7 +218,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
     <FormContainer>
       <Form onSubmit={formSubmitHandler}>
         <FormFlexItem>
-          <Title>Profile</Title>
+          <Title>Please enter additional information to use Teetor.</Title>
           <NameWrapper>
             <div>
               <Label>First name</Label>
@@ -263,7 +263,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
             value={userData.birthday}
             onChange={formChangeHandler}
           />
-          <Label>Description</Label>
+          <Label>Introduce yourself.</Label>
           <Input
             type='text'
             name='description'
@@ -271,29 +271,11 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
             onChange={formChangeHandler}
           />
         </FormFlexItem>
-        <LinksWrapper>
-          <Links>
-            <SelectLink defaultValue={'default'}>
-              <option
-                value='default'
-                disabled
-              >
-                Select
-              </option>
-              <option value='linkedin'>Linked In</option>
-              <option value='github'>Github</option>
-              <option value='blog'>Blog</option>
-              <option value='portfolio'>Portfolio</option>
-            </SelectLink>
-            <Input
-              type='text'
-              width='20rem'
-              margin='0'
-            />
-          </Links>
-        </LinksWrapper>
         <FormFlexItem>
           <Title>Available Days</Title>
+          <Description>
+            Please click the days that you are available.
+          </Description>
           <AvailableDay
             availableDays={userData.availableDays || []}
             isEditable={true}
@@ -301,7 +283,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
           />
         </FormFlexItem>
         <FormFlexItem>
-          <Title>Role</Title>
+          <Title>What is your role?</Title>
+          <Description>You can choose both roles if you want.</Description>
           <RoleWrapper>
             <RoleButton
               $isActive={userData.role?.includes('Mentor') ?? false}
@@ -321,6 +304,11 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ userInfo, mode }) => {
           $isActive={userData.role?.includes('Mentor') ?? false}
         >
           <Title>Mentor Profile</Title>
+          <Description>
+            Are you a mentor? Please choose the profession(s) you are in and
+            choose the skills that you can help with. Also please write a
+            specific description about what you can help the mentee.
+          </Description>
           <SubTitle>Profession</SubTitle>
           <SkillSearch
             option='profession'

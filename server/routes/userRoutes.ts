@@ -19,6 +19,7 @@ import {
 } from '../controllers/userAuthController';
 import {
   addNewEventController,
+  editEventController,
   loadEventsController,
   mentoringRequestController,
   removeEventController,
@@ -55,5 +56,6 @@ router.post('/messages', sendMessageController);
 router.post('/calendar', addNewEventController);
 router.get('/calendar/:id', loadEventsController);
 router.patch('/calendar/:sessionId/event/:eventId', removeEventController);
+router.patch('/calendar/:sessionId/new-event/:eventId', editEventController);
 
 export default router;

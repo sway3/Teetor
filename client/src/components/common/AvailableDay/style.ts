@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const AvailableDayWrapper = styled.div`
   padding: 2rem;
@@ -39,5 +39,10 @@ export const AvailableDayBox = styled.div<AvailableDayBoxProps>`
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 1rem;
-  background-color: ${props => props.$isavailable ? '#097969' : '#B2BEB5'};
+  background-color: ${(props) => (props.$isavailable ? '#097969' : '#B2BEB5')};
+
+  @media (max-width: 768px) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `;

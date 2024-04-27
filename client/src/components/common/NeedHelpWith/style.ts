@@ -10,17 +10,29 @@ export const InnerContainer = styled.div`
   padding: 5rem 5rem;
   border-radius: 2rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 2rem 2rem;
+  }
 `;
 
 export const Title = styled.h1`
   font-size: 3rem;
   font-weight: 600;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 export const PageExplanation = styled.p`
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 export const CardWrapper = styled.div`

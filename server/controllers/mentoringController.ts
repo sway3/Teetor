@@ -105,3 +105,31 @@ export const removeEventController = async (req: Request, res: Response) => {
     res.status(500).json('error occurred in removeEventController');
   }
 };
+
+export const editEventController = async (req: Request, res: Response) => {
+  const sessionId = req.params.sessionId;
+  const eventId = req.params.eventId;
+  const eventData = {
+    title: req.body.eventInfo.title,
+    date: req.body.eventInfo.date,
+    description: req.body.eventInfo.description,
+  };
+
+  console.log(eventData);
+
+  try {
+    await MentoringSession.updateOne(
+      { _id: sessionId, 'calendar._id': eventId },
+      {
+        $set: {
+          'calendar.$': eventData,
+        },
+      }
+    );
+
+    res.status(200).send('edit event successful');
+  } catch (error) {
+    console.error('error in edit event controller: ', error);
+    res.status(500).send('error occurred in edit event controller');
+  }
+};

@@ -6,6 +6,10 @@ export const Container = styled.div`
   height: 100%;
   padding: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 export const Title = styled.h1`
@@ -19,6 +23,20 @@ export const ThreadContainer = styled.div`
   width: 35rem;
   height: 100%;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 1000px) {
+    width: 15rem;
+    border-right: none;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 15rem;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
 `;
 
 export const ThreadNavigator = styled.div`
@@ -47,7 +65,7 @@ export const ChatInput = styled.input`
 `;
 
 export const ChatContent = styled.div`
-  width: 50rem;
+  width: 100%;
   height: 100%;
   overflow-y: auto;
 `;
@@ -94,4 +112,17 @@ export const Suggestion = styled.div`
   background-color: #f5fcf9;
   margin-bottom: 0.5rem;
   cursor: pointer;
+`;
+
+export const ChatButton = styled.button`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #14452f;
+  color: #fff;
+  cursor: pointer;
+`;
+
+export const ChatForm = styled.form`
+  display: flex;
 `;

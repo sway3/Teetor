@@ -13,6 +13,8 @@ import {
   Button,
 } from './style';
 import DatePicker from '../Calendar/DatePicker';
+import DateEditor from '../Calendar/DateEditor';
+import moment from 'moment';
 
 interface EventInfoProps {
   pickedDate: Dayjs | null;
@@ -38,8 +40,6 @@ const EventInfo: React.FC<EventInfoProps> = ({
     }
   });
 
-  console.log(eventInfo);
-
   const removeEventMutation = useMutation({
     mutationFn: (eventInfo: any) => deleteEventReq(eventInfo),
   });
@@ -54,18 +54,6 @@ const EventInfo: React.FC<EventInfoProps> = ({
     location.reload();
   };
 
-  const editEventMutation = useMutation({
-    mutationFn: (eventInfo: any) => editEventReq(eventInfo),
-  });
-
-  const editEventHandler = () => {
-    const event = {
-      sessionId: sessionId,
-      eventId: eventInfo._id,
-    };
-    editEventMutation.mutate(event);
-  };
-
   return (
     <>
       <Title>Meeting Information</Title>
@@ -76,7 +64,8 @@ const EventInfo: React.FC<EventInfoProps> = ({
             <>
               <EventTitle>{eventInfo.title}</EventTitle>
               <DateTime>
-                {eventInfo?.date.slice(0, 10)} {eventInfo.date.slice(11, 16)}
+                {moment(eventInfo?.date).format().slice(0, 10)}{' '}
+                {moment(eventInfo.date).format().slice(11, 16)}
               </DateTime>
               <Description>{eventInfo.description}</Description>
               <ButtonWrapper>
@@ -86,10 +75,9 @@ const EventInfo: React.FC<EventInfoProps> = ({
             </>
           ) : (
             <>
-              <DatePicker
-                pickedDate={pickedDate}
-                setPickedDate={setPickedDate}
+              <DateEditor
                 sessionId={sessionId}
+                eventInfo={eventInfo}
                 isDisplay={isEditEvent}
                 setIsDisplay={setIsEditEvent}
               />

@@ -5,6 +5,10 @@ export const ProfilePageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 2rem 5rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1.5rem;
+  }
 `;
 
 export const ProfilePageContent = styled.div`
@@ -13,8 +17,12 @@ export const ProfilePageContent = styled.div`
   gap: 2rem;
   justify-content: center;
   width: 50rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
-  
+
 export const PageContentLeft = styled.div`
   display: flex;
   flex-direction: column;
@@ -158,7 +166,6 @@ export const AvailableDayTitle = styled.h2`
 
 export const AvailableDayContentWrapper = styled.div`
   display: flex;
-  gap: 1rem;
   margin-top: 1rem;
 `;
 
@@ -166,6 +173,10 @@ export const AvailableDayContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    gap: 0.3rem;
+  }
 `;
 
 export const AvailableDay = styled.p`

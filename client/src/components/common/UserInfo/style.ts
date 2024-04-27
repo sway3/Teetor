@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import profileImg from '../../../assets/profile/blank_profile.png';
 
 export const UserInfoWrapper = styled.div`
   display: flex;
@@ -14,7 +15,9 @@ export const ProfileImg = styled.div`
   height: 13rem;
   border-radius: 50%;
   margin-bottom: 1rem;
-  background-color: #000;
+  background-image: url(${profileImg});
+  background-repeat: no-repeat;
+  background-size: contain;
 `;
 
 export const FullName = styled.p`
@@ -34,6 +37,10 @@ export const Email = styled.p`
   font-weight: 200;
   color: #000;
   margin-bottom: 1rem;
+`;
+
+export const Roles = styled.div`
+  display: flex;
 `;
 
 export const Role = styled.p`

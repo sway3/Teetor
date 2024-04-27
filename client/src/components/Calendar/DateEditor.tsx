@@ -1,15 +1,10 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import {
-  PickersDay,
-  PickersDayProps,
-  StaticDateTimePicker,
-  StaticDateTimePickerSlots,
-} from '@mui/x-date-pickers';
+import { PickersDay, PickersDayProps } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { Badge } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { useMutation } from '@tanstack/react-query';
-import { addNewEventReq } from '../../apis/mentoringAPIs';
+import { addNewEventReq, editEventReq } from '../../apis/mentoringAPIs';
 import {
   Button,
   ButtonWrapper,
@@ -22,26 +17,24 @@ import useLoadEvents from '../../hooks/useLoadEvents';
 
 interface DateTimePickerProps {
   sessionId: string;
+  eventInfo: any;
   isDisplay: boolean;
   setIsDisplay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DatePicker: React.FC<DateTimePickerProps> = ({
+const DateEditor: React.FC<DateTimePickerProps> = ({
   sessionId,
   isDisplay,
+  eventInfo,
   setIsDisplay,
 }) => {
-  const [pickedDate, setPickedDate] = useState<Dayjs | null>(dayjs(new Date()));
-  const [newEventForm, setNewEventForm] = useState<any>({
-    title: '',
-    description: '',
-  });
+  const [pickedDate, setPickedDate] = useState<Dayjs | null>(
+    dayjs(eventInfo.date)
+  );
+
+  const [newEventForm, setNewEventForm] = useState<any>(eventInfo);
 
   const { loadedevents, isPending } = useLoadEvents(sessionId);
-
-  const addEventsMutation = useMutation({
-    mutationFn: (newEvent: any) => addNewEventReq(newEvent),
-  });
 
   const ServerDay = (
     props: PickersDayProps<Dayjs> & { loadedevents?: string[] }
@@ -82,6 +75,7 @@ const DatePicker: React.FC<DateTimePickerProps> = ({
   const formChangeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    console.log(pickedDate);
     const { name, value } = e.currentTarget;
     setNewEventForm((prev: any) => ({
       ...prev,
@@ -89,19 +83,26 @@ const DatePicker: React.FC<DateTimePickerProps> = ({
     }));
   };
 
-  const submitNewSessionHandler = (e: FormEvent) => {
+  const editEventMutation = useMutation({
+    mutationFn: (eventInfo: any) => editEventReq(eventInfo),
+  });
+
+  const submitEditSessionHandler = (e: FormEvent) => {
     e.preventDefault();
 
     if (pickedDate) {
       const formattedDate = pickedDate.toDate().toISOString();
       const newEvent = {
         sessionId: sessionId,
+        eventId: eventInfo._id,
         date: formattedDate,
         title: newEventForm.title,
         description: newEventForm.description,
       };
-      addEventsMutation.mutate(newEvent);
-      alert('new meeting is successfully added.');
+
+      editEventMutation.mutate(newEvent);
+
+      alert('Meeting is successfully edited.');
       location.reload();
     }
   };
@@ -111,13 +112,14 @@ const DatePicker: React.FC<DateTimePickerProps> = ({
       <DateTimePicker
         value={pickedDate}
         onChange={(newDate) => setPickedDate(newDate)}
+        slots={{ day: ServerDay }}
         slotProps={{
           day: {
             loadedevents,
           } as any,
         }}
       />
-      <Form onSubmit={submitNewSessionHandler}>
+      <Form onSubmit={submitEditSessionHandler}>
         <TitleInput
           type='text'
           name='title'
@@ -132,11 +134,11 @@ const DatePicker: React.FC<DateTimePickerProps> = ({
         />
         <ButtonWrapper>
           <Button onClick={() => setIsDisplay(false)}>cancel</Button>
-          <Button onClick={submitNewSessionHandler}>submit</Button>
+          <Button onClick={submitEditSessionHandler}>submit</Button>
         </ButtonWrapper>
       </Form>
     </NewEventWrapper>
   );
 };
 
-export default DatePicker;
+export default DateEditor;

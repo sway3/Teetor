@@ -6,6 +6,7 @@ import MentorCard from '../../components/UI/MentorCard/MentorCard';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
 import { Link } from 'react-router-dom';
+import { ProfileImg, SLink, Username } from './style';
 
 const MatchResultPage: React.FC = () => {
   const location = useLocation();
@@ -19,15 +20,16 @@ const MatchResultPage: React.FC = () => {
         <GridWrapper>
           {mentors.map((mentor: any, index: number) => {
             return (
-              <Link
+              <SLink
                 to={`/match-result/${index}`}
                 key={mentor._id}
                 state={{ mentor: mentors[index], menteeInfo: menteeInfo }}
               >
                 <MentorCard>
-                  <p>{mentor.userName}</p>
+                  <ProfileImg />
+                  <Username>{mentor.userName}</Username>
                 </MentorCard>
-              </Link>
+              </SLink>
             );
           })}
         </GridWrapper>

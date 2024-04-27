@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const MentorCardWrapper = styled.div`
@@ -12,4 +11,13 @@ export const MentorCardWrapper = styled.div`
   border-radius: 0.5rem;
   background-color: #fff;
   margin-top: 2rem;
+  transition: 0.1s ease-in-out;
+
+  &:hover {
+    border: 2px solid #229941;
+  }
+
+  @media (max-width: 768px) {
+    height: 20rem;
+  }
 `;

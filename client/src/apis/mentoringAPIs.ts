@@ -23,8 +23,9 @@ export const deleteEventReq = async (
 };
 
 export const editEventReq = async (eventInfo: any): Promise<AxiosResponse> => {
-  const response = await axiosInstance.put(
-    `calendar/${eventInfo.sessionId}/event/${eventInfo.eventId}`
+  const response = await axiosInstance.patch(
+    `calendar/${eventInfo.sessionId}/new-event/${eventInfo.eventId}`,
+    { eventInfo }
   );
   return response;
 };

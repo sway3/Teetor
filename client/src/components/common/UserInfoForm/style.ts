@@ -4,7 +4,6 @@ export const FormContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
 `;
 
 export const Form = styled.form`
@@ -16,11 +15,13 @@ export const Form = styled.form`
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
-export const FormFlexItem = styled.div`
-  width: 30rem;
-`;
+export const FormFlexItem = styled.div``;
 
 export const Label = styled.label`
   display: block;
@@ -42,12 +43,20 @@ export const Input = styled.input<inputProps>`
   padding: 0.8rem 0.5rem;
   border: 1px solid #d4d4d4;
   border-radius: 0.5rem;
+
+  @media (max-width: 768px) {
+    width: ${(props) => (props.width ? '10rem' : '100%')};
+  }
 `;
 
 export const NameWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 30rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const LinksWrapper = styled.div``;
@@ -99,16 +108,24 @@ interface MentorProps {
 
 export const MentorInfoWrapper = styled.div<MentorProps>`
   display: ${(props) => (props.$isActive ? 'block' : 'none')};
-  width: 30rem;
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 300;
   margin: 1rem 0;
+  word-wrap: break-word;
 `;
 
 export const SubTitle = styled.h3`
   font-size: 1rem;
+`;
+
+export const Description = styled.p`
+  font-size: 1rem;
+  font-weight: 300;
+  color: #000;
+  text-wrap: wrap;
 `;
 
 export const SearchBar = styled.div``;

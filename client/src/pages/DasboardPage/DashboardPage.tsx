@@ -125,7 +125,6 @@ const DashboardPage: React.FC = () => {
                   />
                 )}
               </EventInfoWrapper>
-              <DashboardEtc />
             </DashboardMainSecond>
           </DashboardMain>
         </DashboardContent>

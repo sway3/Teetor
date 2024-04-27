@@ -14,50 +14,47 @@ import {
   LoginButton,
   SignUpButton,
   ProfileImg,
+  FLink,
+  MenuButton,
 } from './style';
 
 import Notification from '../UI/Notification/Notification';
 
 const NavBar: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] =
     React.useState<boolean>(false);
-
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(true);
 
   return (
     <>
       <NavBarWrapper>
+        <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          {isMenuOpen ? 'X' : '☰'}
+        </MenuButton>
         <NavBarInnerWrapper>
           <NavBarTitle>
-            <Link to='/'>teetor</Link>
+            <FLink to='/'>teetor</FLink>
           </NavBarTitle>
-          <NavList>
+          <NavList open={isMenuOpen}>
             <NavItem>
-              <Link to='/'>Dashboard</Link>
+              <FLink to='/'>Dashboard</FLink>
             </NavItem>
             <NavItem>
-              <Link to='/messages'>Messages</Link>
+              <FLink to='/messages'>Messages</FLink>
             </NavItem>
             <NavItem onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
               Notification
             </NavItem>
             <NavItem>
-              <Link to='/match'>Find Mentors</Link>
+              <FLink to='/match'>Find Mentors</FLink>
             </NavItem>
           </NavList>
         </NavBarInnerWrapper>
         <LoginWrapper>
           <LoginInnerWrapper>
-            {isLoggedIn ? (
-              <Link to='/profile'>
-                <ProfileImg />
-              </Link>
-            ) : (
-              <ButtonWrapper>
-                <LoginButton>Login</LoginButton>
-                <SignUpButton>Sign Up</SignUpButton>
-              </ButtonWrapper>
-            )}
+            <Link to='/profile'>
+              <ProfileImg />
+            </Link>
           </LoginInnerWrapper>
         </LoginWrapper>
       </NavBarWrapper>
